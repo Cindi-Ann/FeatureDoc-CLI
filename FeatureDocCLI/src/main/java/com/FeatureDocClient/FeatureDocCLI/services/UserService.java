@@ -2,8 +2,10 @@ package com.FeatureDocClient.FeatureDocCLI.services;
 
 import com.FeatureDocClient.FeatureDocCLI.model.model.RegistrationResponse;
 import com.FeatureDocClient.FeatureDocCLI.model.model.UserResponse;
+import com.FeatureDocClient.FeatureDocCLI.model.model.UserRoleResponse;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
+import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import java.util.stream.Collectors;
 
@@ -58,4 +60,13 @@ public class UserService {
                     return Mono.just("Error retrieving user: " + e.getMessage());
                 });
     }
+
+    public Flux<UserRoleResponse> getRolesByUserId(Integer id) {
+        return webClient.get()
+                .uri("/user-roles/user/{id}", id)
+                .retrieve()
+                .bodyToFlux(UserRoleResponse.class);
+
+    }
+
 }

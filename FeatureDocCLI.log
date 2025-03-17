@@ -38,3 +38,27 @@
 1741892832421:help
 1741892835842:register
 1741892842512:register --name cindi --email meh
+1742018946840:help
+1742018955470:get-user
+1742018960869:get-user --userID 1
+1742018982621:get-all-users
+1742019102515:get-users
+1742019105190:help
+1742019108524:get-all-users
+1742019170243:get-user --userID 1
+1742019387978:get-all-users
+1742241288302:help
+1742241307840:get-feature --id 1
+1742242133619:help
+1742242142756:get-feature-statuses
+1742242288333:get-feature --id 1
+1742242426289:get-feature-statuses
+1742242638794:get-feature-status-by-id --id 1
+1742242643448:get-feature-status-by-id --4
+1742242651936:get-feature-status-by-id --id 5
+1742242857741:delete-feature-status-by-id --id 3
+1742243704571:get-user-roles --id 1
+1742243978840:help
+1742243987160:get-user-roles --id 1
+1742244117108:help
+1742244124002:get-user-roles --id 1

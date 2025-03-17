@@ -1,4 +1,11 @@
 package com.FeatureDocClient.FeatureDocCLI.model.model;
+import java.time.LocalDateTime;
+import lombok.Getter;
+import lombok.Setter;
 
-public record LoginResponse() {
+@Getter
+@Setter
+public class LoginResponse {
+    private String username;
+    private String email;
 }
