@@ -38,6 +38,7 @@
 1741892832421:help
 1741892835842:register
 1741892842512:register --name cindi --email meh
+<<<<<<< Updated upstream
 1742018946840:help
 1742018955470:get-user
 1742018960869:get-user --userID 1
@@ -62,3 +63,12 @@
 1742243987160:get-user-roles --id 1
 1742244117108:help
 1742244124002:get-user-roles --id 1
+=======
+1742230402878:get all users
+1742230413781:get-all-users
+1742230582805:exit
+1742230623650:get-all-users
+1742231477833:stacktract
+1742231481868:stacktrace
+1742231596091:get-all-users
+>>>>>>> Stashed changes
