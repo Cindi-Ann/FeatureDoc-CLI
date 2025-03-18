@@ -5,20 +5,17 @@ import org.springframework.shell.standard.ShellComponent;
 import org.springframework.shell.standard.ShellMethod;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
+import java.awt.Desktop;
+import java.net.URI;
 
 @ShellComponent
 public class UserCommands {
 
     private final UserService userService;
 
+
     public UserCommands(UserService userService) {
         this.userService = userService;
-    }
-
-    @ShellMethod(key = "register", value = "Register a user with name and email")
-    public String register(String name, String email) {
-        Mono<String> response = userService.registerUser(name, email);
-        return response.block(); // Block to get the result (for simplicity in a shell command)
     }
 
     @ShellMethod(key = "get-all-users", value = "Get all users")

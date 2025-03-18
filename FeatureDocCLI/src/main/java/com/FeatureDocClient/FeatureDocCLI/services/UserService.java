@@ -15,8 +15,11 @@ public class UserService {
     // WebClient is used to make HTTP requests to other services
     private final WebClient webClient;
 
-    public UserService(WebClient webClient) {
+    private final WebClient redirectClient;
+
+    public UserService(WebClient webClient, WebClient redirectClient) {
         this.webClient = webClient;
+        this.redirectClient = redirectClient;
     }
 
     public Mono<String> registerUser(String name, String email) {
@@ -67,6 +70,47 @@ public class UserService {
                 .retrieve()
                 .bodyToFlux(UserRoleResponse.class);
 
+    }
+
+    public void login(String redirectUrl) {
+        String baseUrl = "http://localhost:8080"; // Replace with your base URL
+
+        redirectClient.get()
+                .uri(baseUrl)
+                .exchangeToMono(clientResponse -> {
+                    if (clientResponse.statusCode().is3xxRedirection()) {
+                        String redirectUrl2 = clientResponse.headers().header("Location").get(0);
+                        System.out.println("Redirecting to: " + redirectUrl2);
+
+                        if (redirectUrl.contains("accounts.google.com")) {
+                            openBrowser(redirectUrl);
+                        }
+                    }
+                    return clientResponse.bodyToMono(String.class);
+                })
+                .block(); // Block to execute the request synchronously
+    }
+
+    public void openBrowser(String url) {
+        try {
+            String os = System.getProperty("os.name").toLowerCase();
+            if (os.contains("win")) {
+                // Windows
+                Runtime.getRuntime().exec("rundll32 url.dll,FileProtocolHandler " + url);
+            } else if (os.contains("mac")) {
+                // macOS
+                Runtime.getRuntime().exec("open " + url);
+            } else if (os.contains("nix") || os.contains("nux") || os.contains("aix")) {
+                // Linux/Unix
+                Runtime.getRuntime().exec("xdg-open " + url);
+            } else {
+                System.out.println("Unsupported operating system.");
+                return;
+            }
+            System.out.println("Browser opened successfully.");
+        } catch (Exception e) {
+            System.out.println("Failed to open browser: " + e.getMessage());
+        }
     }
 
 }
