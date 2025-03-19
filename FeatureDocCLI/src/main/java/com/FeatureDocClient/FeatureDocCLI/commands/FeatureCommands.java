@@ -1,5 +1,6 @@
 package com.FeatureDocClient.FeatureDocCLI.commands;
 
+import com.FeatureDocClient.FeatureDocCLI.model.model.FeatureCreatedResponse;
 import com.FeatureDocClient.FeatureDocCLI.model.model.FeatureResponse;
 import com.FeatureDocClient.FeatureDocCLI.services.FeatureService;
 import com.FeatureDocClient.FeatureDocCLI.services.FeatureStatusService;
@@ -26,17 +27,6 @@ public class FeatureCommands {
         this.priorityService = priorityService;
     }
 
-    @ShellMethod(key = "get-feature-by-id", value = "get a feature by id")
-    public String getFeatureById(Integer id) {
-        Mono<String> response = featureService.getFeatureById(id);
-        return response.block(); // Block to get the result (for simplicity in a shell command)
-    }
-
-//    @ShellMethod(key = "create-feature", value = "create a new feature")
-//    public String createFeature(String filePath) {
-//
-//    }
-
     @ShellMethod(key = "get-feature-history", value = "get a feature's history by id")
     public String getFeatureHistoryById(Integer id){
         Mono<String> response = featureService.getFeatureHistoryById(id);
@@ -55,7 +45,7 @@ public class FeatureCommands {
         return response.block(); // Block to get the result (for simplicity in a shell command)
     }
 
-    @ShellMethod(key = "get-feature-status-by-id", value = "get all features statuses")
+    @ShellMethod(key = "get-feature-status-by-id", value = "get features statuses by id")
     public String getFeatureStatusesByID(Integer id) {
         Mono<String> response = featureStatusService.getFeatureStatusById(id);
         return response.block(); // Block to get the result (for simplicity in a shell command)
@@ -91,12 +81,32 @@ public class FeatureCommands {
         return response.block(); // Block to get the result (for simplicity in a shell command)
     }
 
-    @ShellMethod(key= "test", value = "create a feature")
-    public String test(@ShellOption(value = "--args") String args) {
-        System.out.println(args);
-        return "okay";
-    }
+    @ShellMethod(key= "add-feature", value = "add a feature")
+    public String addFeature(@ShellOption(value = "--args") String args) {
+        StringBuilder result = new StringBuilder();
+        try {
+                String[] columns = args.split(",");
+                if (columns.length != 8) {
+                    return "Invalid CSV format.";
+                }
+                FeatureCreatedResponse featureResponse = new FeatureCreatedResponse();
+                featureResponse.setCreatedBy(Integer.parseInt(columns[0].trim()));
+                featureResponse.setUpdatedBy(Integer.parseInt(columns[1].trim()));
+                featureResponse.setFeatureStatusID(Integer.parseInt(columns[2].trim()));
+                featureResponse.setPriorityID(Integer.parseInt(columns[3].trim()));
+                featureResponse.setAssignedTo(Integer.parseInt(columns[4].trim()));
+                featureResponse.setName(columns[5].trim());
+                featureResponse.setShortDescription(columns[6].trim());
+                featureResponse.setURL(columns[7].trim());
 
+                Mono<String> response = featureService.createFeature(featureResponse);
+                return response.block(); // Block to get the result (for simplicity in a shell command)
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            return "Error processing CSV: " + e.getMessage();
+        }
+    }
 
     @ShellMethod(key= "delete-priority", value = "delete a priority")
     public String deletePriority(Integer id) {

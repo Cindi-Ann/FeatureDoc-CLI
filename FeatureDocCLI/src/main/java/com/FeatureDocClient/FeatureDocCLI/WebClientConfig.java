@@ -14,7 +14,6 @@ public class WebClientConfig {
 
     @Bean
     public WebClient webClient() {
-
         return WebClient.builder()
                 .baseUrl(baseUrl)
                 .defaultHeader("Accept", "application/json")
