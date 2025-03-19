@@ -29,6 +29,7 @@ jobs:
 
     - name: Publish to GitHub Packages Apache Maven
       working-directory: FeatureDocCLI
-      run: mvn deploy -B -s $GITHUB_WORKSPACE/settings.xml -DskipTests
+      run: mvn deploy -B -s $GITHUB_WORKSPACE/settings.xml -DskipTests -DaltDeploymentRepository=github::default::https://maven.pkg.github.com/Cindi-Ann/FeatureDoc-CLI
+  working-directory: FeatureDocCLI
       env:
         GITHUB_TOKEN: ${{ github.token }}
