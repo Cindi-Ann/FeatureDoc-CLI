@@ -27,9 +27,9 @@ jobs:
     - name: Build with Maven
       run: mvn -B package --file FeatureDocCLI/pom.xml -DskipTests
 
-    - name: Publish to GitHub Packages Apache Maven
-      working-directory: FeatureDocCLI
-      run: mvn deploy -B -s $GITHUB_WORKSPACE/settings.xml -DskipTests \
-          -DaltDeploymentRepository=github::default::https://maven.pkg.github.com/Cindi-Ann/FeatureDoc-CLI
-      env:
-        GITHUB_TOKEN: ${{ github.token }}
+    - name: Upload JAR Artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: cli-jar
+        path: target/*.jar
+
