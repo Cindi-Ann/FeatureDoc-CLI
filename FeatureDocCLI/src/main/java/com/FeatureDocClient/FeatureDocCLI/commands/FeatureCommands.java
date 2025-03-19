@@ -82,29 +82,14 @@ public class FeatureCommands {
     }
 
     @ShellMethod(key= "add-feature", value = "add a feature")
-    public String addFeature(@ShellOption(value = "--args") String args) {
-        StringBuilder result = new StringBuilder();
+    public String addFeature(String jsonInput) {
         try {
-                String[] columns = args.split(",");
-                if (columns.length != 8) {
-                    return "Invalid CSV format.";
-                }
-                FeatureCreatedResponse featureResponse = new FeatureCreatedResponse();
-                featureResponse.setCreatedBy(Integer.parseInt(columns[0].trim()));
-                featureResponse.setUpdatedBy(Integer.parseInt(columns[1].trim()));
-                featureResponse.setFeatureStatusID(Integer.parseInt(columns[2].trim()));
-                featureResponse.setPriorityID(Integer.parseInt(columns[3].trim()));
-                featureResponse.setAssignedTo(Integer.parseInt(columns[4].trim()));
-                featureResponse.setName(columns[5].trim());
-                featureResponse.setShortDescription(columns[6].trim());
-                featureResponse.setURL(columns[7].trim());
-
-                Mono<String> response = featureService.createFeature(featureResponse);
-                return response.block(); // Block to get the result (for simplicity in a shell command)
-
+            ObjectMapper objectMapper = new ObjectMapper();
+            FeatureCreatedResponse featureRequest = objectMapper.readValue(jsonInput, FeatureCreatedResponse.class);
+            Mono<String> response = featureService.createFeature(featureRequest);
+            return response.block();
         } catch (Exception e) {
-            e.printStackTrace();
-            return "Error processing CSV: " + e.getMessage();
+            return "Invalid JSON input: " + e.getMessage();
         }
     }
 

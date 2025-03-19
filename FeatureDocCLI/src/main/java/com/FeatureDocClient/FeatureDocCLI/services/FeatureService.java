@@ -25,7 +25,7 @@ public class FeatureService {
                 .header("Authorization", "Bearer " + LoginCommand.getAccessToken())
                 .bodyValue(request) // Send the request body (description only)
                 .retrieve()
-                .bodyToMono(FeatureCreatedResponse.class) // Expect a single PriorityResponse in the response
+                .bodyToMono(FeatureResponse.class)
                 .map(priority -> "Feature created successfully: " + priority.toString())
                 .onErrorResume(e -> {
                     System.err.println("Error occurred: " + e.getMessage());

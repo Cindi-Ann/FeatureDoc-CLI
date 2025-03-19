@@ -97,5 +97,21 @@ public class FeatureCreatedResponse {
     public void setURL(String URL) {
         this.URL = URL;
     }
+
+    @Override
+    public String toString() {
+        return "FeatureCreatedResponse{" +
+                "createdBy=" + createdBy +
+                ", updatedBy=" + updatedBy +
+                ", featureStatusID=" + featureStatusID +
+                ", priorityID=" + priorityID +
+                ", assignedTo=" + assignedTo +
+                ", name='" + name + '\'' +
+                ", shortDescription='" + shortDescription + '\'' +
+                ", URL='" + URL + '\'' +
+                '}';
+    }
+
+
 }
 
