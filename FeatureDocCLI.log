@@ -73,3 +73,41 @@
 1742334313194:llogin
 1742334315453:login
 1742365247919:help
+1742371268283:login
+1742373230915:help
+1742373243961:get-priorities
+1742373322706:help
+1742373329201:get-priorities
+1742373781039:help
+1742373793536:create-priority
+1742373835697:create-priority --description Low
+1742374956888:help
+1742374962892:get-priorities
+1742375106215:get-all-users
+1742375197658:get-priorities
+1742375235929:create-priority --description High
+1742375907915:help
+1742375920239:get-priority-by-id --id 1
+1742375959242:get-priority --id 1
+1742375961542:help
+1742375969591:get-priority-by-id --id 1
+1742375979412:get-priority-by-id --id 6
+1742376007169:get-priority-by-id --id 7
+1742376754639:get-role-by-id --id 1
+1742376800195:get-roles
+1742376825452:get-role-by-id --id 1
+1742376920285:help
+1742377575342:get-all-users
+1742377591858:help
+1742377696334:get-user-roles --id 1
+1742378683047:help
+1742378707357:get-all-users
+1742379161518:login
+1742385299171:help
+1742385317152:create-priority --description Medium
+1742385365627:delete-priority --id 9
+1742385380327:delete-priority --id 6
+1742385401829:delete-priority --id 8
+1742385409847:delete-priority --id 7
+1742385784698:get-all-users
+1742386204160:help

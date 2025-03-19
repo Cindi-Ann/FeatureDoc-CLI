@@ -1,5 +1,6 @@
 package com.FeatureDocClient.FeatureDocCLI.services;
 
+import com.FeatureDocClient.FeatureDocCLI.model.model.PriorityResponse;
 import com.FeatureDocClient.FeatureDocCLI.model.model.RegistrationResponse;
 import com.FeatureDocClient.FeatureDocCLI.model.model.UserResponse;
 import com.FeatureDocClient.FeatureDocCLI.model.model.UserRoleResponse;
@@ -15,11 +16,8 @@ public class UserService {
     // WebClient is used to make HTTP requests to other services
     private final WebClient webClient;
 
-    private final WebClient redirectClient;
-
     public UserService(WebClient webClient, WebClient redirectClient) {
         this.webClient = webClient;
-        this.redirectClient = redirectClient;
     }
 
     public Mono<String> registerUser(String name, String email) {
@@ -31,10 +29,20 @@ public class UserService {
                 .bodyToMono(String.class); // Convert the response body to a Mono<String>
     }
 
+    public Mono<String> loginUser(String authCode) {
+        return webClient.post()
+                .uri("/login") // Endpoint to create a new priority
+                .cookie("JSESSIONID", "DBA44AF5A2D0898ABA101C98CF3F9230")
+                .bodyValue(authCode) // Send the request body (description only)
+                .retrieve()
+                .bodyToMono(String.class);
+    }
+
     // Get a list of all users
     public Mono<String> getAllUsers() {
         return webClient.get()
                 .uri("/users")
+                .cookie("JSESSIONID", "DBA44AF5A2D0898ABA101C98CF3F9230")
                 .retrieve()
                 .bodyToFlux(UserResponse.class)
                 .collectList()
@@ -67,6 +75,7 @@ public class UserService {
     public Flux<UserRoleResponse> getRolesByUserId(Integer id) {
         return webClient.get()
                 .uri("/user-roles/user/{id}", id)
+                .cookie("JSESSIONID", "DBA44AF5A2D0898ABA101C98CF3F9230")
                 .retrieve()
                 .bodyToFlux(UserRoleResponse.class);
 

@@ -2,6 +2,8 @@ package com.FeatureDocClient.FeatureDocCLI.commands;
 
 import com.FeatureDocClient.FeatureDocCLI.GoogleOAuth2Config;
 import com.FeatureDocClient.FeatureDocCLI.OAuthSocketServer;
+import com.FeatureDocClient.FeatureDocCLI.services.RoleService;
+import com.FeatureDocClient.FeatureDocCLI.services.UserService;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.shell.standard.ShellComponent;
@@ -21,6 +23,11 @@ public class LoginCommand {
 
     private final WebClient webClient = WebClient.builder().defaultHeader("Accept", "application/x-www-form-urlencoded")
             .build();
+    private UserService userService;
+
+    public LoginCommand(UserService userService) {
+        this.userService = userService;
+    }
 
     private String accessToken;
 
@@ -43,10 +50,10 @@ public class LoginCommand {
             String requestBody = "{\"authCode\" : \"" + authorizationCode + "\"}";
             //TODO: return JWT
             //JWT = resposne from server
-
+          //  userService.loginUser(requestBody);
             //TODO: move to server side
-            accessToken = exchangeCodeForToken(authorizationCode);
-            System.out.println("Access Token: " + accessToken);
+//            accessToken = exchangeCodeForToken(authorizationCode);
+//            System.out.println("Access Token: " + accessToken);
 
         } catch (IOException e) {
             System.out.println("Error during login: " + e.getMessage());

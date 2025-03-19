@@ -1,9 +1,6 @@
 package com.FeatureDocClient.FeatureDocCLI.services;
 
-import com.FeatureDocClient.FeatureDocCLI.model.model.FeatureResponse;
-import com.FeatureDocClient.FeatureDocCLI.model.model.FeatureStatusResponse;
-import com.FeatureDocClient.FeatureDocCLI.model.model.RegistrationResponse;
-import com.FeatureDocClient.FeatureDocCLI.model.model.UserResponse;
+import com.FeatureDocClient.FeatureDocCLI.model.model.*;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
@@ -53,15 +50,30 @@ public class FeatureStatusService {
     }
 
     // Delete feature status by id
-//    public Mono<String> deleteFeatureStatusById(Integer id) {
-//        return webClient.delete()
-//                .uri("/feature-statuses/{id}", id)
-//                .retrieve()
-//                .bodyToMono(FeatureResponse.class)
-//                .then(Mono.just("Feature status with ID " + id + " deleted successfully."))
-//                .onErrorResume(e -> {
-//                    System.err.println("Error occurred: " + e.getMessage());
-//                    return Mono.just("Error deleting feature status: " + e.getMessage());
-//                });
-//    }
+    public Mono<String> deleteFeatureStatusById(Integer id) {
+        return webClient.delete()
+                .uri("/feature-statuses/{id}", id)
+                .retrieve()
+                .bodyToMono(FeatureResponse.class)
+                .then(Mono.just("Feature status with ID " + id + " deleted successfully."))
+                .onErrorResume(e -> {
+                    System.err.println("Error occurred: " + e.getMessage());
+                    return Mono.just("Error deleting feature status: " + e.getMessage());
+                });
+    }
+
+    public Mono<String> createFeatureStatus(FeatureStatusResponse featureStatusResponse) {
+        FeatureStatusResponse request = featureStatusResponse;
+        return webClient.post()
+                .uri("/feature-statuses") // Endpoint to create a new Feature-Status
+                .cookie("JSESSIONID", "DBA44AF5A2D0898ABA101C98CF3F9230")
+                .bodyValue(request) // Send the request body (description only)
+                .retrieve()
+                .bodyToMono(FeatureStatusResponse.class)
+                .map(featureStatus -> "Feature-Status created successfully: " + featureStatus.toString())
+                .onErrorResume(e -> {
+                    System.err.println("Error occurred: " + e.getMessage());
+                    return Mono.just("Error creating Feature-Status: " + e.getMessage());
+                });
+    }
 }

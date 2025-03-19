@@ -31,7 +31,7 @@ public class OAuthSocketServer {
                     out.println("HTTP/1.1 200 OK");
                     out.println("Content-Type: text/html");
                     out.println("\r\n");
-                    out.println("<html><body><h1>Login successful! You can close this window.</h1></body></html>");
+                    out.println("<html><body><h1>LOGIN SUCCESSFUL</h1></body></html>");
                     serverSocket.close();
                     clientSocket.close();
                     return code;

@@ -12,7 +12,9 @@ import org.springframework.web.service.invoker.HttpServiceProxyFactory;
 public class FeatureDocCliApplication {
 
 	public static void main(String[] args) {
+		System.out.println("\033[33m");
 		SpringApplication.run(FeatureDocCliApplication.class, args);
+		System.out.println("\033[0m");
 	}
 
 }
