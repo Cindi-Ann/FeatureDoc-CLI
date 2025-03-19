@@ -8,7 +8,7 @@ public class OAuthSocketServer {
 
     public static String startAndWaitForCode(int port) throws IOException {
         try (ServerSocket serverSocket = new ServerSocket(port)) {
-            System.out.println("Socket server listening on port " + port);
+           // System.out.println("Socket server listening on port " + port);
 
             // Wait for a single connection
             try (Socket clientSocket = serverSocket.accept();

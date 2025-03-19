@@ -31,14 +31,20 @@ public class LoginCommand {
                 "&redirect_uri=" + GoogleOAuth2Config.REDIRECT_URI +
                 "&response_type=code" +
                 "&scope=" + GoogleOAuth2Config.SCOPE +
-                "&access_type=offline" + "&prompt=consent";
+                "&access_type=offline";
         System.out.println("Opening browser for Google login...");
         openBrowser(authUrl);
+        System.out.println("If not redirected to login, please go to this link: " + authUrl);
 
         try {
             // Start the socket server and wait for the authorization code
             String authorizationCode = OAuthSocketServer.startAndWaitForCode(3000);
-            // Exchange the authorization code for an access token
+            // Exchange the auth code for a jwt from the server
+            String requestBody = "{\"authCode\" : \"" + authorizationCode + "\"}";
+            //TODO: return JWT
+            //JWT = resposne from server
+
+            //TODO: move to server side
             accessToken = exchangeCodeForToken(authorizationCode);
             System.out.println("Access Token: " + accessToken);
 
@@ -47,32 +53,7 @@ public class LoginCommand {
         }
     }
 
-
-//    @ShellMethod(key = "logout", value = "Logout from Google")
-//    public void logout() {
-//        // Revoke the access token
-//        revokeToken(accessToken);
-//
-//        // Clear local state
-//        accessToken = null;
-//        System.out.println("Logged out successfully.");
-//    }
-
-//    private void revokeToken(String token) {
-//        MultiValueMap<String, String> requestBody = new LinkedMultiValueMap<>();
-//        requestBody.add("token", token);
-//
-//        webClient.post()
-//                .uri("https://oauth2.googleapis.com/revoke")
-//                .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_FORM_URLENCODED_VALUE)
-//                .bodyValue(requestBody)
-//                .retrieve()
-//                .bodyToMono(String.class)
-//                .doOnSuccess(response -> System.out.println("Token revoked successfully."))
-//                .doOnError(error -> System.out.println("Failed to revoke token: " + error.getMessage()))
-//                .block();
-//    }
-
+    //TODO: Move to server side - user should send the auth code to the server and the server should generate a jwt token
     private String exchangeCodeForToken(String authorizationCode) {
         String decodedAuthCode = URLDecoder.decode(authorizationCode, StandardCharsets.UTF_8);
         MultiValueMap<String, String> requestBody = new LinkedMultiValueMap<>();
@@ -81,7 +62,6 @@ public class LoginCommand {
         requestBody.add("client_secret", GoogleOAuth2Config.CLIENT_SECRET);
         requestBody.add("redirect_uri", GoogleOAuth2Config.REDIRECT_URI);
         requestBody.add("grant_type", "authorization_code");
-
 
         // Send the POST request using WebClient
         Map<String, String> response = webClient.post()
@@ -95,6 +75,7 @@ public class LoginCommand {
         // Extract and return the ID token
         return response.get("id_token");
     }
+
 
     public void openBrowser(String url) {
         try {
