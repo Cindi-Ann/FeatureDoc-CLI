@@ -1,7 +1,7 @@
 package com.FeatureDocClient.FeatureDocCLI.model.model;
 
+
 import lombok.Getter;
-import lombok.NonNull;
 import lombok.Setter;
 
 @Getter
@@ -15,11 +15,9 @@ public class PriorityResponse {
         this.description = description;
     }
 
+
     @Override
     public String toString() {
-        return "Priority{" +
-                "priorityID=" +priorityID +
-                ", description='" +description + '\'' +
-                '}';
+        return String.format("Priority ID: %-10s | Description: %-10s", priorityID, description);
     }
 }

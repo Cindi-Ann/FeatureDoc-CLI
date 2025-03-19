@@ -61,6 +61,18 @@ public class FeatureCommands {
         return response.block(); // Block to get the result (for simplicity in a shell command)
     }
 
+    @ShellMethod(key = "create-feature-status", value = "create feature status")
+    public String createFeatureStatus(String description) {
+        Mono<String> response = featureStatusService.createFeatureStatus(description);
+        return response.block(); // Block to get the result (for simplicity in a shell command)
+    }
+
+    @ShellMethod(key = "delete-feature-status", value = "delete feature status")
+    public String deleteFeatureStatus(Integer id) {
+        Mono<String> response = featureStatusService.deleteFeatureStatusById(id);
+        return response.block(); // Block to get the result (for simplicity in a shell command)
+    }
+
     @ShellMethod(key = "get-priorities", value = "get all priorities")
     public String getAllPriorities() {
         Mono<String> response = priorityService.getAllPriorities();
@@ -79,7 +91,7 @@ public class FeatureCommands {
         return response.block(); // Block to get the result (for simplicity in a shell command)
     }
 
-    @ShellMethod(key= "test", value = "create a priority")
+    @ShellMethod(key= "test", value = "create a feature")
     public String test(@ShellOption(value = "--args") String args) {
         System.out.println(args);
         return "okay";

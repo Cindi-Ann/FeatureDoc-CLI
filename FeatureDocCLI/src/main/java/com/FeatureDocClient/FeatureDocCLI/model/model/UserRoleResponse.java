@@ -34,10 +34,7 @@ public class UserRoleResponse {
 
         @Override
         public String toString() {
-            return "{" +
-                    "userID=" + userID +
-                    ", roleID=" + roleID +
-                    '}';
+            return String.format("User ID: %-5s | Role ID: %-5s", userID, roleID);
         }
     }
 }

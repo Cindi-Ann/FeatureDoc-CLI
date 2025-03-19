@@ -7,7 +7,6 @@ import lombok.ToString;
 
 @Getter
 @Setter
-@ToString
 public class RoleResponse {
     private Integer roleID;
     private String roleName;
@@ -16,4 +15,9 @@ public class RoleResponse {
         this.roleName = roleName;
     }
 
+    @Override
+    public String toString() {
+        // Use String.format for cleaner formatting
+        return String.format("RoleID: %-20s | Role Name: %-20s", roleID, roleName);
+    }
 }

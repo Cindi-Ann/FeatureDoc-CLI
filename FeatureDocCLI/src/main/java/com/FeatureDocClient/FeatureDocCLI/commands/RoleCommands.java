@@ -16,7 +16,7 @@ public class RoleCommands {
 
     @ShellMethod(key = "get-roles", value = "get all user roles")
     public String getAllRoles() {
-        Mono<String> response = roleService.getAllroles();
+        Mono<String> response = roleService.getAllRoles();
         return response.block(); // Block to get the result (for simplicity in a shell command)
     }
 
@@ -27,8 +27,8 @@ public class RoleCommands {
     }
 
     @ShellMethod(key= "create-role", value = "create a role")
-    public String createRole(String description) {
-        Mono<String> response = roleService.createRole(description);
+    public String createRole(String roleName) {
+        Mono<String> response = roleService.createRole(roleName);
         return response.block(); // Block to get the result (for simplicity in a shell command)
     }
 

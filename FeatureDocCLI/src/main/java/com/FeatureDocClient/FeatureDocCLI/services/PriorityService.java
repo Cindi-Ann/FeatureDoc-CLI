@@ -1,8 +1,7 @@
 package com.FeatureDocClient.FeatureDocCLI.services;
 
+import com.FeatureDocClient.FeatureDocCLI.commands.LoginCommand;
 import com.FeatureDocClient.FeatureDocCLI.model.model.PriorityResponse;
-import com.FeatureDocClient.FeatureDocCLI.model.model.RegistrationResponse;
-import com.FeatureDocClient.FeatureDocCLI.model.model.UserResponse;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
@@ -23,7 +22,7 @@ public class PriorityService {
     public Mono<String> getAllPriorities() {
         return webClient.get()
                 .uri("/priorities")
-                .cookie("JSESSIONID", "DBA44AF5A2D0898ABA101C98CF3F9230")
+                .header("Authorization", "Bearer " + LoginCommand.getAccessToken())
                 .retrieve()
                 .bodyToFlux(PriorityResponse.class)
                 .collectList()
@@ -43,7 +42,7 @@ public class PriorityService {
         PriorityResponse request = new PriorityResponse(description);
         return webClient.post()
                 .uri("/priorities") // Endpoint to create a new priority
-                .cookie("JSESSIONID", "B0512D1FD51289F2F5F9367A5C81EBA0")
+                .header("Authorization", "Bearer " + LoginCommand.getAccessToken())
                 .bodyValue(request) // Send the request body (description only)
                 .retrieve()
                 .bodyToMono(PriorityResponse.class) // Expect a single PriorityResponse in the response
@@ -57,7 +56,7 @@ public class PriorityService {
     public Mono<String> deletePriority(Integer priorityID) {
         return webClient.delete()
                 .uri("/priorities/{id}", priorityID) // Use path variable for priorityID
-                .cookie("JSESSIONID", "B0512D1FD51289F2F5F9367A5C81EBA0") // Add cookie
+                .header("Authorization", "Bearer " + LoginCommand.getAccessToken())
                 .retrieve()
                 .bodyToMono(Void.class)
                 .thenReturn("Priority deleted successfully: " + priorityID)
@@ -70,7 +69,7 @@ public class PriorityService {
     public Mono<String> getPriorityById(Integer id) {
         return webClient.get()
                 .uri("/priorities/{id}", id)
-                .cookie("JSESSIONID", "DBA44AF5A2D0898ABA101C98CF3F9230")
+                .header("Authorization", "Bearer " + LoginCommand.getAccessToken())
                 .retrieve()
                 .bodyToMono(PriorityResponse.class)
                 .map(user -> "Priority:\n" + user.toString())

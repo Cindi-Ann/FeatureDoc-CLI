@@ -1,5 +1,6 @@
 package com.FeatureDocClient.FeatureDocCLI.services;
 
+import com.FeatureDocClient.FeatureDocCLI.commands.LoginCommand;
 import com.FeatureDocClient.FeatureDocCLI.model.model.*;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
@@ -36,6 +37,7 @@ public class FeatureService {
     public Mono<String> getFeatureById(Integer id) {
         return webClient.get()
                 .uri("/feature/{id}", id)
+                .header("Authorization", "Bearer " + LoginCommand.getAccessToken())
                 .retrieve()
                 .bodyToMono(FeatureResponse.class)
                 .map(feature -> "Feature:\n" + feature.toString())
@@ -52,7 +54,7 @@ public class FeatureService {
     public Mono<String> getFeatureHistoryById(Integer id) {
         return webClient.get()
                 .uri("/feature-versions/{id}/history", id)
-                .header("Authorization", "Bearer eyJhbGciOiJIUzI1NiJ9.eyJhY2Nlc3NfdG9rZW4iOiJ5YTI5LmEwQWVYUlBwN3RyMDBQTTZielQxNWQzY2NkaDBZQ2xLLU9ucGNqWUx0STFjbDFGcHZDMHBjbVctRF84eWpMSEJmNTcycFA1NGsxZGtYM1BjQ21jLXV1U0gxTFZHTGttTmZnRlp6N0dNUlRjYm15TmlzaGNJcmNzTnFTWGE2UHlJa1k2OThxTjZ6b2tXaGNBU1hfTUdRTE5qT1p6TDZQbzUwaDROMDJYY2MyR3dhQ2dZS0FXRVNBUkFTRlFIR1gyTWljX0ttMi1zb2xiazV0eFFVNFZiVEFRMDE3NyIsImlhdCI6MTc0MjM5NDMyMSwiZXhwIjoxNzQyMzk3OTIxfQ.eCNIcC6f1_XaRBVGIwPF94q8BJs4v2ssoCi4L-EOuTw")
+                .header("Authorization", "Bearer " + LoginCommand.getAccessToken())
                 .retrieve()
                 .bodyToFlux(FeatureResponse.class)
                 .collectList()
@@ -70,7 +72,7 @@ public class FeatureService {
     public Mono<String> getLatestFeatureVersionById(Integer id) {
         return webClient.get()
                 .uri("/feature-versions/{id}", id)
-                .header("Authorization", "Bearer eyJhbGciOiJIUzI1NiJ9.eyJhY2Nlc3NfdG9rZW4iOiJ5YTI5LmEwQWVYUlBwN3RyMDBQTTZielQxNWQzY2NkaDBZQ2xLLU9ucGNqWUx0STFjbDFGcHZDMHBjbVctRF84eWpMSEJmNTcycFA1NGsxZGtYM1BjQ21jLXV1U0gxTFZHTGttTmZnRlp6N0dNUlRjYm15TmlzaGNJcmNzTnFTWGE2UHlJa1k2OThxTjZ6b2tXaGNBU1hfTUdRTE5qT1p6TDZQbzUwaDROMDJYY2MyR3dhQ2dZS0FXRVNBUkFTRlFIR1gyTWljX0ttMi1zb2xiazV0eFFVNFZiVEFRMDE3NyIsImlhdCI6MTc0MjM5NDMyMSwiZXhwIjoxNzQyMzk3OTIxfQ.eCNIcC6f1_XaRBVGIwPF94q8BJs4v2ssoCi4L-EOuTw")
+                .header("Authorization", "Bearer " + LoginCommand.getAccessToken())
                 .retrieve()
                 .bodyToMono(FeatureResponse.class)
                 .map(user -> "Feature Version:\n" + user.toString())

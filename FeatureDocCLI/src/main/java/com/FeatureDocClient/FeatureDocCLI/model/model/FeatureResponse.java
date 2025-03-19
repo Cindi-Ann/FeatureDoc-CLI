@@ -25,22 +25,34 @@ public class FeatureResponse {
 
     @Override
     public String toString() {
-        return "{" +
-                "featureVersionID=" + featureVersionID +
-                ", featureName='" + featureName + '\'' +
-                ", createdBy='" + createdBy + '\'' +
-                ", createdAt=" + createdAt +
-                ", featureID=" + featureID +
-                ", updateBy='" + updateBy + '\'' +
-                ", featureStatus='" + featureStatus + '\'' +
-                ", priority='" + priority + '\'' +
-                ", assignedTo='" + assignedTo + '\'' +
-                ", name='" + name + '\'' +
-                ", shortDescription='" + shortDescription + '\'' +
-                ", URL='" + URL + '\'' +
-                ", updatedDate=" + updatedDate +
-                ", deletedDate=" + deletedDate +
-                '}';
+        return String.format("+-----------------------+---------------------------------------+\n" +
+                        "| %-21s | %-37s |\n" +
+                        "| %-21s | %-37s |\n" +
+                        "| %-21s | %-37s |\n" +
+                        "| %-21s | %-37s |\n" +
+                        "| %-21s | %-37s |\n" +
+                        "| %-21s | %-37s |\n" +
+                        "| %-21s | %-37s |\n" +
+                        "| %-21s | %-37s |\n" +
+                        "| %-21s | %-37s |\n" +
+                        "| %-21s | %-37s |\n" +
+                        "| %-21s | %-37s |\n" +
+                        "| %-21s | %-37s |\n" +
+                        "+-----------------------+---------------------------------------+",
+                "featureVersionID", featureVersionID,
+                "featureName", featureName,
+                "createdBy", createdBy,
+                "createdAt", createdAt,
+                "featureID", featureID,
+                "updateBy", updateBy,
+                "featureStatus", featureStatus,
+                "priority", priority,
+                "assignedTo", assignedTo,
+                "name", name,
+                "shortDescription", shortDescription,
+                "URL", URL,
+                "updatedDate", updatedDate,
+                "deletedDate", deletedDate);
     }
 
 }

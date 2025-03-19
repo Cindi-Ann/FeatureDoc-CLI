@@ -1,5 +1,6 @@
 package com.FeatureDocClient.FeatureDocCLI.services;
 
+import com.FeatureDocClient.FeatureDocCLI.commands.LoginCommand;
 import com.FeatureDocClient.FeatureDocCLI.model.model.*;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
@@ -20,6 +21,7 @@ public class FeatureStatusService {
     public Mono<String> getAllFeatureStatuses() {
         return webClient.get()
                 .uri("/feature-statuses")
+                .header("Authorization", "Bearer " + LoginCommand.getAccessToken())
                 .retrieve()
                 .bodyToFlux(FeatureStatusResponse.class)
                 .collectList()
@@ -39,6 +41,7 @@ public class FeatureStatusService {
     public Mono<String> getFeatureStatusById(Integer id) {
         return webClient.get()
                 .uri("/feature-statuses/{id}", id)
+                .header("Authorization", "Bearer " + LoginCommand.getAccessToken())
                 .retrieve()
                 .bodyToMono(FeatureStatusResponse.class)
                 .map(featureStatus -> "Feature-Status:\n" + featureStatus.toString())
@@ -53,6 +56,7 @@ public class FeatureStatusService {
     public Mono<String> deleteFeatureStatusById(Integer id) {
         return webClient.delete()
                 .uri("/feature-statuses/{id}", id)
+                .header("Authorization", "Bearer " + LoginCommand.getAccessToken())
                 .retrieve()
                 .bodyToMono(FeatureResponse.class)
                 .then(Mono.just("Feature status with ID " + id + " deleted successfully."))
@@ -62,11 +66,11 @@ public class FeatureStatusService {
                 });
     }
 
-    public Mono<String> createFeatureStatus(FeatureStatusResponse featureStatusResponse) {
-        FeatureStatusResponse request = featureStatusResponse;
+    public Mono<String> createFeatureStatus(String description) {
+        FeatureStatusResponse request = new FeatureStatusResponse(description);
         return webClient.post()
                 .uri("/feature-statuses") // Endpoint to create a new Feature-Status
-                .cookie("JSESSIONID", "DBA44AF5A2D0898ABA101C98CF3F9230")
+                .header("Authorization", "Bearer " + LoginCommand.getAccessToken())
                 .bodyValue(request) // Send the request body (description only)
                 .retrieve()
                 .bodyToMono(FeatureStatusResponse.class)

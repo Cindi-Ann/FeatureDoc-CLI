@@ -12,7 +12,6 @@ import java.sql.Timestamp;
 @ToString
 public class FeatureCreatedResponse {
     private Integer createdBy;
-    private Integer featureID;
     private Integer updatedBy;
     private Integer featureStatusID;
     private Integer priorityID;

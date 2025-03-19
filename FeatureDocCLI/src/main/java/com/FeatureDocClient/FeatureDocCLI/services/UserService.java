@@ -1,7 +1,7 @@
 package com.FeatureDocClient.FeatureDocCLI.services;
 
-import com.FeatureDocClient.FeatureDocCLI.model.model.PriorityResponse;
-import com.FeatureDocClient.FeatureDocCLI.model.model.RegistrationResponse;
+import com.FeatureDocClient.FeatureDocCLI.commands.LoginCommand;
+
 import com.FeatureDocClient.FeatureDocCLI.model.model.UserResponse;
 import com.FeatureDocClient.FeatureDocCLI.model.model.UserRoleResponse;
 import org.springframework.stereotype.Service;
@@ -9,9 +9,11 @@ import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
-import java.util.HashMap;
-import java.util.Map;
+
 import java.util.stream.Collectors;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 
 @Service
 public class UserService {
@@ -23,29 +25,36 @@ public class UserService {
         this.webClient = webClient;
     }
 
-    public Mono<String> registerUser(String name, String email) {
-        RegistrationResponse request = new RegistrationResponse(name, email);
-        return webClient.post()
-                .uri("/register") // The endpoint to call
-                .bodyValue(request) // Set the request body
-                .retrieve() // Send the request and retrieve the response
-                .bodyToMono(String.class); // Convert the response body to a Mono<String>
-    }
-
     public Mono<String> loginUser(String authCode) {
-        return webClient.post()
-                .uri("/login") // Endpoint to create a new priority
-                .cookie("JSESSIONID", "DBA44AF5A2D0898ABA101C98CF3F9230")
-                .bodyValue(authCode) // Send the request body (description only)
+        return webClient.get()  // Use GET as the server expects a GET request
+                .uri(uriBuilder -> uriBuilder.path("/auth/token")  // Define the path
+                        .queryParam("code", authCode)  // Add the 'code' as a query parameter
+                        .build())
                 .retrieve()
-                .bodyToMono(String.class);
+                .bodyToMono(String.class)  // Retrieve the response body as a string
+                .map(response -> {
+                    // Process the response and extract JWT if necessary
+                    try {
+                        // Create ObjectMapper instance
+                        ObjectMapper objectMapper = new ObjectMapper();
+                        // Parse the string to a JsonNode
+                        JsonNode jsonNode = objectMapper.readTree(response);
+                        // Extract te access_token
+                        String accessToken = jsonNode.get("access_token").asText();
+
+                        return accessToken;
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                    return "No token received";
+                });
     }
 
     // Get a list of all users
     public Mono<String> getAllUsers() {
         return webClient.get()
                 .uri("/users")
-                .cookie("JSESSIONID", "DBA44AF5A2D0898ABA101C98CF3F9230")
+                .header("Authorization", "Bearer " + LoginCommand.getAccessToken())
                 .retrieve()
                 .bodyToFlux(UserResponse.class)
                 .collectList()
@@ -65,6 +74,7 @@ public class UserService {
     public Mono<String> getUserById(Integer id) {
         return webClient.get()
                 .uri("/users/{id}", id)
+                .header("Authorization", "Bearer " + LoginCommand.getAccessToken())
                 .retrieve()
                 .bodyToMono(UserResponse.class)
                 .map(user -> "User:\n" + user.toString())
@@ -78,7 +88,7 @@ public class UserService {
     public Flux<UserRoleResponse> getRolesByUserId(Integer id) {
         return webClient.get()
                 .uri("/user-roles/user/{id}", id)
-                .header("Authorization", "Bearer eyJhbGciOiJIUzI1NiJ9.eyJhY2Nlc3NfdG9rZW4iOiJ5YTI5LmEwQWVYUlBwN09ndngzTk14VFBiTmhPSDFUVk1CVVNiVHo4clFFMjRDSzZGNkZBLXN2TFhiUWU4dWhqQTMxaElVVVJzdEVVVWhRWUptSnhoQW0xTFM4bGhTUU1wSHlxT2czR29GUjJiZTRuaHg3SERjQjNTZ2xONm53S1g1Yko0RlNTZmNtV0xYWC12WmNvRHl1TnVxWHZxTVlYT29US1dIVE9OMDM4LUF3M3dhQ2dZS0FVOFNBUkFTRlFIR1gyTWlJVlFjYW9OVFB5VnBDaHUtSEtvZ3dRMDE3NyIsImlhdCI6MTc0MjM5MjE1NCwiZXhwIjoxNzQyMzk1NzU0fQ.QW6FYg8QA0dj2DzIm4KSqd1hv3LusRhOn-wXRHzMdVQ")
+                .header("Authorization", "Bearer " + LoginCommand.getAccessToken())
                 .retrieve()
                 .bodyToFlux(UserRoleResponse.class);
 
@@ -88,7 +98,7 @@ public class UserService {
 
         return webClient.post()
                 .uri("/user-roles") // Endpoint for POST request
-                .header("Authorization", "Bearer eyJhbGciOiJIUzI1NiJ9.eyJhY2Nlc3NfdG9rZW4iOiJ5YTI5LmEwQWVYUlBwN09ndngzTk14VFBiTmhPSDFUVk1CVVNiVHo4clFFMjRDSzZGNkZBLXN2TFhiUWU4dWhqQTMxaElVVVJzdEVVVWhRWUptSnhoQW0xTFM4bGhTUU1wSHlxT2czR29GUjJiZTRuaHg3SERjQjNTZ2xONm53S1g1Yko0RlNTZmNtV0xYWC12WmNvRHl1TnVxWHZxTVlYT29US1dIVE9OMDM4LUF3M3dhQ2dZS0FVOFNBUkFTRlFIR1gyTWlJVlFjYW9OVFB5VnBDaHUtSEtvZ3dRMDE3NyIsImlhdCI6MTc0MjM5MjE1NCwiZXhwIjoxNzQyMzk1NzU0fQ.QW6FYg8QA0dj2DzIm4KSqd1hv3LusRhOn-wXRHzMdVQ")
+                .header("Authorization", "Bearer " + LoginCommand.getAccessToken())
                 .bodyValue(userRoleResponse) // Include the request body (if needed)
                 .exchangeToMono(clientResponse -> {
                     System.out.println("Response status: " + clientResponse.statusCode());

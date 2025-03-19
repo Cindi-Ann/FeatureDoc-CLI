@@ -1,8 +1,7 @@
 package com.FeatureDocClient.FeatureDocCLI.services;
 
+import com.FeatureDocClient.FeatureDocCLI.commands.LoginCommand;
 import com.FeatureDocClient.FeatureDocCLI.model.model.RoleResponse;
-import com.FeatureDocClient.FeatureDocCLI.model.model.RegistrationResponse;
-import com.FeatureDocClient.FeatureDocCLI.model.model.UserResponse;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
@@ -20,10 +19,10 @@ public class RoleService {
         this.webClient = webClient;
     }
 
-    public Mono<String> getAllroles() {
+    public Mono<String> getAllRoles() {
         return webClient.get()
                 .uri("/roles")
-                .header("Authorization", "Bearer eyJhbGciOiJIUzI1NiJ9.eyJhY2Nlc3NfdG9rZW4iOiJ5YTI5LmEwQWVYUlBwN3RyMDBQTTZielQxNWQzY2NkaDBZQ2xLLU9ucGNqWUx0STFjbDFGcHZDMHBjbVctRF84eWpMSEJmNTcycFA1NGsxZGtYM1BjQ21jLXV1U0gxTFZHTGttTmZnRlp6N0dNUlRjYm15TmlzaGNJcmNzTnFTWGE2UHlJa1k2OThxTjZ6b2tXaGNBU1hfTUdRTE5qT1p6TDZQbzUwaDROMDJYY2MyR3dhQ2dZS0FXRVNBUkFTRlFIR1gyTWljX0ttMi1zb2xiazV0eFFVNFZiVEFRMDE3NyIsImlhdCI6MTc0MjM5NDMyMSwiZXhwIjoxNzQyMzk3OTIxfQ.eCNIcC6f1_XaRBVGIwPF94q8BJs4v2ssoCi4L-EOuTw")
+                .header("Authorization", "Bearer " + LoginCommand.getAccessToken())
                 .retrieve()
                 .bodyToFlux(RoleResponse.class)
                 .collectList()
@@ -43,7 +42,7 @@ public class RoleService {
         RoleResponse request = new RoleResponse(roleName);
         return webClient.post()
                 .uri("/roles") // Endpoint to create a new Role
-                .header("Authorization", "Bearer eyJhbGciOiJIUzI1NiJ9.eyJhY2Nlc3NfdG9rZW4iOiJ5YTI5LmEwQWVYUlBwN3RyMDBQTTZielQxNWQzY2NkaDBZQ2xLLU9ucGNqWUx0STFjbDFGcHZDMHBjbVctRF84eWpMSEJmNTcycFA1NGsxZGtYM1BjQ21jLXV1U0gxTFZHTGttTmZnRlp6N0dNUlRjYm15TmlzaGNJcmNzTnFTWGE2UHlJa1k2OThxTjZ6b2tXaGNBU1hfTUdRTE5qT1p6TDZQbzUwaDROMDJYY2MyR3dhQ2dZS0FXRVNBUkFTRlFIR1gyTWljX0ttMi1zb2xiazV0eFFVNFZiVEFRMDE3NyIsImlhdCI6MTc0MjM5NDMyMSwiZXhwIjoxNzQyMzk3OTIxfQ.eCNIcC6f1_XaRBVGIwPF94q8BJs4v2ssoCi4L-EOuTw")
+                .header("Authorization", "Bearer " + LoginCommand.getAccessToken())
                 .bodyValue(request) // Send the request body (description only)
                 .retrieve()
                 .bodyToMono(RoleResponse.class) // Expect a single RoleResponse in the response
@@ -57,7 +56,7 @@ public class RoleService {
     public Mono<String> deleteRole(Integer RoleID) {
         return webClient.delete()
                 .uri("/roles/{id}", RoleID) // Use path variable for RoleID
-                .header("Authorization", "Bearer eyJhbGciOiJIUzI1NiJ9.eyJhY2Nlc3NfdG9rZW4iOiJ5YTI5LmEwQWVYUlBwN3RyMDBQTTZielQxNWQzY2NkaDBZQ2xLLU9ucGNqWUx0STFjbDFGcHZDMHBjbVctRF84eWpMSEJmNTcycFA1NGsxZGtYM1BjQ21jLXV1U0gxTFZHTGttTmZnRlp6N0dNUlRjYm15TmlzaGNJcmNzTnFTWGE2UHlJa1k2OThxTjZ6b2tXaGNBU1hfTUdRTE5qT1p6TDZQbzUwaDROMDJYY2MyR3dhQ2dZS0FXRVNBUkFTRlFIR1gyTWljX0ttMi1zb2xiazV0eFFVNFZiVEFRMDE3NyIsImlhdCI6MTc0MjM5NDMyMSwiZXhwIjoxNzQyMzk3OTIxfQ.eCNIcC6f1_XaRBVGIwPF94q8BJs4v2ssoCi4L-EOuTw")
+                .header("Authorization", "Bearer " + LoginCommand.getAccessToken())
                 .retrieve()
                 .bodyToMono(Void.class)
                 .thenReturn("Role deleted successfully: " + RoleID)
@@ -70,7 +69,7 @@ public class RoleService {
     public Mono<String> getRoleById(Integer id) {
         return webClient.get()
                 .uri("/roles/{id}", id)
-                .header("Authorization", "Bearer eyJhbGciOiJIUzI1NiJ9.eyJhY2Nlc3NfdG9rZW4iOiJ5YTI5LmEwQWVYUlBwN3RyMDBQTTZielQxNWQzY2NkaDBZQ2xLLU9ucGNqWUx0STFjbDFGcHZDMHBjbVctRF84eWpMSEJmNTcycFA1NGsxZGtYM1BjQ21jLXV1U0gxTFZHTGttTmZnRlp6N0dNUlRjYm15TmlzaGNJcmNzTnFTWGE2UHlJa1k2OThxTjZ6b2tXaGNBU1hfTUdRTE5qT1p6TDZQbzUwaDROMDJYY2MyR3dhQ2dZS0FXRVNBUkFTRlFIR1gyTWljX0ttMi1zb2xiazV0eFFVNFZiVEFRMDE3NyIsImlhdCI6MTc0MjM5NDMyMSwiZXhwIjoxNzQyMzk3OTIxfQ.eCNIcC6f1_XaRBVGIwPF94q8BJs4v2ssoCi4L-EOuTw")
+                .header("Authorization", "Bearer " + LoginCommand.getAccessToken())
                 .retrieve()
                 .bodyToMono(RoleResponse.class)
                 .map(user -> "Role:\n" + user.toString())

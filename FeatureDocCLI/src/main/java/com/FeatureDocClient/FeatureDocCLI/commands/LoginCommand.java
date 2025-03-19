@@ -11,6 +11,7 @@ import org.springframework.shell.standard.ShellMethod;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.reactive.function.client.WebClient;
+import reactor.core.publisher.Mono;
 
 import java.io.IOException;
 import java.net.URLDecoder;
@@ -29,10 +30,10 @@ public class LoginCommand {
         this.userService = userService;
     }
 
-    private String accessToken;
+    private static String accessToken;
 
     @ShellMethod(key = "login", value = "Perform login and open the browser for authentication")
-    public void login() {
+    public String login() {
         String authUrl = GoogleOAuth2Config.AUTHORIZATION_URI +
                 "?client_id=" + GoogleOAuth2Config.CLIENT_ID +
                 "&redirect_uri=" + GoogleOAuth2Config.REDIRECT_URI +
@@ -46,43 +47,20 @@ public class LoginCommand {
         try {
             // Start the socket server and wait for the authorization code
             String authorizationCode = OAuthSocketServer.startAndWaitForCode(3000);
+            String decodedAuthCode = URLDecoder.decode(authorizationCode, StandardCharsets.UTF_8);
             // Exchange the auth code for a jwt from the server
-            String requestBody = "{\"authCode\" : \"" + authorizationCode + "\"}";
-            //TODO: return JWT
+            String requestBody =  decodedAuthCode;
             //JWT = resposne from server
-          //  userService.loginUser(requestBody);
-            //TODO: move to server side
-            accessToken = exchangeCodeForToken(authorizationCode);
-            System.out.println("Access Token: " + accessToken);
-
+            Mono<String> response = userService.loginUser(decodedAuthCode);
+            setAccessToken(response.block());
+            System.out.println(accessToken);
+            return response.block();
         } catch (IOException e) {
             System.out.println("Error during login: " + e.getMessage());
         }
+
+        return "Login Unsuccessful";
     }
-
-    //TODO: Move to server side - user should send the auth code to the server and the server should generate a jwt token
-    private String exchangeCodeForToken(String authorizationCode) {
-        String decodedAuthCode = URLDecoder.decode(authorizationCode, StandardCharsets.UTF_8);
-        MultiValueMap<String, String> requestBody = new LinkedMultiValueMap<>();
-        requestBody.add("code", decodedAuthCode);
-        requestBody.add("client_id", GoogleOAuth2Config.CLIENT_ID);
-        requestBody.add("client_secret", GoogleOAuth2Config.CLIENT_SECRET);
-        requestBody.add("redirect_uri", GoogleOAuth2Config.REDIRECT_URI);
-        requestBody.add("grant_type", "authorization_code");
-
-        // Send the POST request using WebClient
-        Map<String, String> response = webClient.post()
-                .uri(GoogleOAuth2Config.TOKEN_URI)
-                .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_FORM_URLENCODED_VALUE)
-                .bodyValue(requestBody)
-                .retrieve()
-                .bodyToMono(Map.class)
-                .block();
-
-        // Extract and return the ID token
-        return response.get("id_token");
-    }
-
 
     public void openBrowser(String url) {
         try {
@@ -106,4 +84,11 @@ public class LoginCommand {
         }
     }
 
+    public static void setAccessToken(String newValue) {
+        accessToken = newValue;
+    }
+
+    public static String getAccessToken() {
+        return accessToken;
+    }
 }
