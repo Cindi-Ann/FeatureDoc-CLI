@@ -8,6 +8,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
+
+import java.util.HashMap;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @Service
@@ -75,10 +78,31 @@ public class UserService {
     public Flux<UserRoleResponse> getRolesByUserId(Integer id) {
         return webClient.get()
                 .uri("/user-roles/user/{id}", id)
-                .cookie("JSESSIONID", "DBA44AF5A2D0898ABA101C98CF3F9230")
+                .header("Authorization", "Bearer eyJhbGciOiJIUzI1NiJ9.eyJhY2Nlc3NfdG9rZW4iOiJ5YTI5LmEwQWVYUlBwN09ndngzTk14VFBiTmhPSDFUVk1CVVNiVHo4clFFMjRDSzZGNkZBLXN2TFhiUWU4dWhqQTMxaElVVVJzdEVVVWhRWUptSnhoQW0xTFM4bGhTUU1wSHlxT2czR29GUjJiZTRuaHg3SERjQjNTZ2xONm53S1g1Yko0RlNTZmNtV0xYWC12WmNvRHl1TnVxWHZxTVlYT29US1dIVE9OMDM4LUF3M3dhQ2dZS0FVOFNBUkFTRlFIR1gyTWlJVlFjYW9OVFB5VnBDaHUtSEtvZ3dRMDE3NyIsImlhdCI6MTc0MjM5MjE1NCwiZXhwIjoxNzQyMzk1NzU0fQ.QW6FYg8QA0dj2DzIm4KSqd1hv3LusRhOn-wXRHzMdVQ")
                 .retrieve()
                 .bodyToFlux(UserRoleResponse.class);
 
+    }
+
+    public Mono<UserRoleResponse> createUserRole(UserRoleResponse userRoleResponse) {
+
+        return webClient.post()
+                .uri("/user-roles") // Endpoint for POST request
+                .header("Authorization", "Bearer eyJhbGciOiJIUzI1NiJ9.eyJhY2Nlc3NfdG9rZW4iOiJ5YTI5LmEwQWVYUlBwN09ndngzTk14VFBiTmhPSDFUVk1CVVNiVHo4clFFMjRDSzZGNkZBLXN2TFhiUWU4dWhqQTMxaElVVVJzdEVVVWhRWUptSnhoQW0xTFM4bGhTUU1wSHlxT2czR29GUjJiZTRuaHg3SERjQjNTZ2xONm53S1g1Yko0RlNTZmNtV0xYWC12WmNvRHl1TnVxWHZxTVlYT29US1dIVE9OMDM4LUF3M3dhQ2dZS0FVOFNBUkFTRlFIR1gyTWlJVlFjYW9OVFB5VnBDaHUtSEtvZ3dRMDE3NyIsImlhdCI6MTc0MjM5MjE1NCwiZXhwIjoxNzQyMzk1NzU0fQ.QW6FYg8QA0dj2DzIm4KSqd1hv3LusRhOn-wXRHzMdVQ")
+                .bodyValue(userRoleResponse) // Include the request body (if needed)
+                .exchangeToMono(clientResponse -> {
+                    System.out.println("Response status: " + clientResponse.statusCode());
+                    if (clientResponse.statusCode().is2xxSuccessful()) {
+                        return clientResponse.bodyToMono(UserRoleResponse.class)
+                                .doOnNext(response -> System.out.println("Response body: " + response));
+                    } else {
+                        return clientResponse.bodyToMono(String.class)
+                                .flatMap(errorBody -> {
+                                    System.out.println("Error body: " + errorBody);
+                                    return Mono.error(new RuntimeException("API error: " + clientResponse.statusCode() + ", " + errorBody));
+                                });
+                    }
+                });
     }
 
 }

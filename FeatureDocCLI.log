@@ -111,3 +111,50 @@
 1742385409847:delete-priority --id 7
 1742385784698:get-all-users
 1742386204160:help
+1742386545580:login
+1742388696542:get-all-users
+1742388787337:help
+1742388799800:create user-role
+1742388813787:create user-role --userId 1 --roleI 5
+1742388822215:create user-role --userId 1 --roleId 5
+1742388978990:help
+1742389000992:get-user-roles --id 1
+1742389085343:help
+1742389113007:create user-role --roleId 1 --userId 1
+1742389133536:create user-role --roleId 5 --userId 1
+1742389225078:help
+1742389238442:create-user-role --userId 1 --roleId 7
+1742389528513:get-user-roles
+1742389534676:get-user-roles --id 1
+1742389669491:create-user-role
+1742389677210:create-user-role --userId 1
+1742389736150:get-user-roles --userId 1
+1742389742941:get-user-roles --id 1
+1742390446991:create-user-role --userID 1 --roleID 7
+1742390927907:get-user-role --id 1
+1742390930433:help
+1742390935450:get-user-roles --id 1
+1742391011878:create-user-role --userID 1 --roleID 7
+1742391781809:create-user-role --userID 1 --roleID 8
+1742392264105:create-user-role --userID 1 --roleID 9
+1742392403463:get-all-users
+1742392426403:help
+1742392435372:get-user-roles --id 1
+1742392444870:get-user-roles --userID 1
+1742392450567:get-user-roles --id 1
+1742392509952:create-user-role --userID 1 --roleID 8
+1742394684303:get-feature-history --id 1
+1742395045061:get-latest-feature-version --id 1
+1742396684232:help
+1742396689889:get-roles
+1742396847276:create-role --roleName Senior Java Developer
+1742396864528:create-role --description Senior Java Developer
+1742396902666:delete-role --id 13
+1742396918268:get-roles
+1742396956992:delete-role --id 13
+1742396973550:get-role-by-id --id 13
+1742396980151:get-role-by-id --id 12
+1742397011706:get-role-by-id --id 13
+1742397018252:get-role-by-id --id 12
+1742397429989:test
+1742397438375:test --args a1,a2,a3,a4

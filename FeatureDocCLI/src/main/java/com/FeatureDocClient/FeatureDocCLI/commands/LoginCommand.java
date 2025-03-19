@@ -52,8 +52,8 @@ public class LoginCommand {
             //JWT = resposne from server
           //  userService.loginUser(requestBody);
             //TODO: move to server side
-//            accessToken = exchangeCodeForToken(authorizationCode);
-//            System.out.println("Access Token: " + accessToken);
+            accessToken = exchangeCodeForToken(authorizationCode);
+            System.out.println("Access Token: " + accessToken);
 
         } catch (IOException e) {
             System.out.println("Error during login: " + e.getMessage());

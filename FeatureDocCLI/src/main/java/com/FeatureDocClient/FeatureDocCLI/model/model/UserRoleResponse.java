@@ -12,10 +12,7 @@ public class UserRoleResponse {
 
     private UserRoleId id; // Nested composite key
 
-    public UserRoleResponse() {}
-
-    // All-argument constructor (optional, for convenience)
-    public UserRoleResponse(UserRoleId id) {
+    public UserRoleResponse(UserRoleId id){
         this.id = id;
     }
 

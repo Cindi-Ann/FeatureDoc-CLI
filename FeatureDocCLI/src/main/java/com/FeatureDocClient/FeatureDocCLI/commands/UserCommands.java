@@ -43,4 +43,17 @@ public class UserCommands {
 
         return result.toString();
     }
+
+    @ShellMethod(key = "create-user-role", value = "Create user role")
+    public String createUserRoles(Integer userID, Integer roleID){
+        try {
+            UserRoleResponse.UserRoleId userRoleId = new UserRoleResponse.UserRoleId(roleID, userID);
+            UserRoleResponse requestPayload = new UserRoleResponse(userRoleId);
+            UserRoleResponse response = userService.createUserRole(requestPayload).block();
+            return "Role successfully assigned: " + response;
+        } catch (Exception e) {
+            return "Failed to assign role: " + e.getMessage();
+        }
+    }
 }
+
