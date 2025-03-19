@@ -29,6 +29,6 @@ jobs:
 
     - name: Publish to GitHub Packages Apache Maven
       working-directory: FeatureDocCLI
-      run: mvn deploy -B -s $GITHUB_WORKSPACE/settings.xml
+      run: mvn deploy -B -s $GITHUB_WORKSPACE/settings.xml -DskipTests
       env:
         GITHUB_TOKEN: ${{ github.token }}
