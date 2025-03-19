@@ -1,0 +1,35 @@
+name: Maven Deploy
+
+on:
+  push:
+    branches:
+      - master
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+
+    - name: Set up JDK 23
+      uses: actions/setup-java@v4
+      with:
+        java-version: '23'
+        distribution: 'temurin'
+        server-id: github
+        settings-path: ${{ github.workspace }}
+
+    - name: Build with Maven
+      run: mvn -B package --file FeatureDocCLI/pom.xml -DskipTests
+
+    - name: Publish to GitHub Packages Apache Maven
+      working-directory: FeatureDocCLI
+      run: mvn deploy -B -s $GITHUB_WORKSPACE/settings.xml -DskipTests \
+          -DaltDeploymentRepository=github::default::https://maven.pkg.github.com/Cindi-Ann/FeatureDoc-CLI
+      env:
+        GITHUB_TOKEN: ${{ github.token }}
