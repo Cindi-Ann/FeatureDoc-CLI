@@ -1,6 +1,7 @@
 package com.FeatureDocClient.FeatureDocCLI.services;
-
 import com.FeatureDocClient.FeatureDocCLI.model.model.PriorityResponse;
+import com.FeatureDocClient.FeatureDocCLI.WebClientConfig;
+
 import com.FeatureDocClient.FeatureDocCLI.model.model.RegistrationResponse;
 import com.FeatureDocClient.FeatureDocCLI.model.model.UserResponse;
 import com.FeatureDocClient.FeatureDocCLI.model.model.UserRoleResponse;
@@ -17,10 +18,19 @@ import java.util.stream.Collectors;
 public class UserService {
 
     // WebClient is used to make HTTP requests to other services
+
     private final WebClient webClient;
 
-    public UserService(WebClient webClient, WebClient redirectClient) {
+
+    private WebClientConfig webClientConfig;
+
+    private final WebClient redirectClient;
+
+    public UserService(WebClient webClient, WebClient redirectClient, WebClientConfig webClientConfig) {
         this.webClient = webClient;
+        this.webClientConfig = webClientConfig;
+        this.redirectClient = redirectClient;
+
     }
 
     public Mono<String> registerUser(String name, String email) {
@@ -45,7 +55,15 @@ public class UserService {
     public Mono<String> getAllUsers() {
         return webClient.get()
                 .uri("/users")
-                .cookie("JSESSIONID", "DBA44AF5A2D0898ABA101C98CF3F9230")
+                .headers(httpHeaders -> {
+                    String authToken = webClientConfig.getAuthToken();
+                    System.out.println(authToken);
+                    if (authToken.isEmpty() ) {
+                        return;
+                    }
+
+                    httpHeaders.add("Authorization", authToken);
+                })
                 .retrieve()
                 .bodyToFlux(UserResponse.class)
                 .collectList()

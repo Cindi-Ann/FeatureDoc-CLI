@@ -2,8 +2,13 @@ package com.FeatureDocClient.FeatureDocCLI.commands;
 
 import com.FeatureDocClient.FeatureDocCLI.GoogleOAuth2Config;
 import com.FeatureDocClient.FeatureDocCLI.OAuthSocketServer;
+<<<<<<< Updated upstream
 import com.FeatureDocClient.FeatureDocCLI.services.RoleService;
 import com.FeatureDocClient.FeatureDocCLI.services.UserService;
+=======
+import com.FeatureDocClient.FeatureDocCLI.WebClientConfig;
+import org.springframework.beans.factory.annotation.Autowired;
+>>>>>>> Stashed changes
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.shell.standard.ShellComponent;
@@ -21,6 +26,7 @@ import java.util.Map;
 @ShellComponent
 public class LoginCommand {
 
+<<<<<<< Updated upstream
     private final WebClient webClient = WebClient.builder().defaultHeader("Accept", "application/x-www-form-urlencoded")
             .build();
     private UserService userService;
@@ -28,6 +34,13 @@ public class LoginCommand {
     public LoginCommand(UserService userService) {
         this.userService = userService;
     }
+=======
+    @Autowired
+    private WebClient webClient;
+
+    @Autowired
+    private WebClientConfig webClientConfig;
+>>>>>>> Stashed changes
 
     private String accessToken;
 
@@ -46,13 +59,20 @@ public class LoginCommand {
         try {
             // Start the socket server and wait for the authorization code
             String authorizationCode = OAuthSocketServer.startAndWaitForCode(3000);
+<<<<<<< Updated upstream
             // Exchange the auth code for a jwt from the server
             String requestBody = "{\"authCode\" : \"" + authorizationCode + "\"}";
             //TODO: return JWT
             //JWT = resposne from server
           //  userService.loginUser(requestBody);
             //TODO: move to server side
+=======
+
+            // Exchange the auth code for a jwt from the server
+>>>>>>> Stashed changes
             accessToken = exchangeCodeForToken(authorizationCode);
+
+            webClientConfig.setAuthToken(accessToken);
             System.out.println("Access Token: " + accessToken);
 
         } catch (IOException e) {
@@ -63,24 +83,17 @@ public class LoginCommand {
     //TODO: Move to server side - user should send the auth code to the server and the server should generate a jwt token
     private String exchangeCodeForToken(String authorizationCode) {
         String decodedAuthCode = URLDecoder.decode(authorizationCode, StandardCharsets.UTF_8);
-        MultiValueMap<String, String> requestBody = new LinkedMultiValueMap<>();
-        requestBody.add("code", decodedAuthCode);
-        requestBody.add("client_id", GoogleOAuth2Config.CLIENT_ID);
-        requestBody.add("client_secret", GoogleOAuth2Config.CLIENT_SECRET);
-        requestBody.add("redirect_uri", GoogleOAuth2Config.REDIRECT_URI);
-        requestBody.add("grant_type", "authorization_code");
 
         // Send the POST request using WebClient
-        Map<String, String> response = webClient.post()
-                .uri(GoogleOAuth2Config.TOKEN_URI)
-                .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_FORM_URLENCODED_VALUE)
-                .bodyValue(requestBody)
+        Map<String, String> response = webClient.get()
+                .uri("/auth/token?code="+decodedAuthCode)
+                .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
                 .retrieve()
                 .bodyToMono(Map.class)
                 .block();
 
         // Extract and return the ID token
-        return response.get("id_token");
+        return response.get("access_token");
     }
 
 

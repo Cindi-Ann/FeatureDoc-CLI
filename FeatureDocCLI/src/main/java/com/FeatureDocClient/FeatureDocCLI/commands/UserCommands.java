@@ -20,8 +20,13 @@ public class UserCommands {
 
     @ShellMethod(key = "get-all-users", value = "Get all users")
     public String getAllUsers() {
-        Mono<String> response = userService.getAllUsers();
-        return response.block();
+        try {
+            Mono<String> response = userService.getAllUsers();
+            return response.block();
+        } catch (Exception e) {
+            return e.getMessage();
+        }
+
     }
 
     @ShellMethod(key = "get-user", value = "Get user by id")
