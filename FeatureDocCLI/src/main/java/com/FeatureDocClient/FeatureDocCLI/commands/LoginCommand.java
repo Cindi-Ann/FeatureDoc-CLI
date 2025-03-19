@@ -2,13 +2,8 @@ package com.FeatureDocClient.FeatureDocCLI.commands;
 
 import com.FeatureDocClient.FeatureDocCLI.GoogleOAuth2Config;
 import com.FeatureDocClient.FeatureDocCLI.OAuthSocketServer;
-<<<<<<< Updated upstream
-import com.FeatureDocClient.FeatureDocCLI.services.RoleService;
-import com.FeatureDocClient.FeatureDocCLI.services.UserService;
-=======
 import com.FeatureDocClient.FeatureDocCLI.WebClientConfig;
 import org.springframework.beans.factory.annotation.Autowired;
->>>>>>> Stashed changes
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.shell.standard.ShellComponent;
@@ -26,21 +21,11 @@ import java.util.Map;
 @ShellComponent
 public class LoginCommand {
 
-<<<<<<< Updated upstream
-    private final WebClient webClient = WebClient.builder().defaultHeader("Accept", "application/x-www-form-urlencoded")
-            .build();
-    private UserService userService;
-
-    public LoginCommand(UserService userService) {
-        this.userService = userService;
-    }
-=======
     @Autowired
     private WebClient webClient;
 
     @Autowired
     private WebClientConfig webClientConfig;
->>>>>>> Stashed changes
 
     private String accessToken;
 
@@ -59,17 +44,8 @@ public class LoginCommand {
         try {
             // Start the socket server and wait for the authorization code
             String authorizationCode = OAuthSocketServer.startAndWaitForCode(3000);
-<<<<<<< Updated upstream
-            // Exchange the auth code for a jwt from the server
-            String requestBody = "{\"authCode\" : \"" + authorizationCode + "\"}";
-            //TODO: return JWT
-            //JWT = resposne from server
-          //  userService.loginUser(requestBody);
-            //TODO: move to server side
-=======
 
             // Exchange the auth code for a jwt from the server
->>>>>>> Stashed changes
             accessToken = exchangeCodeForToken(authorizationCode);
 
             webClientConfig.setAuthToken(accessToken);
