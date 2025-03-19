@@ -2,6 +2,7 @@ package com.FeatureDocClient.FeatureDocCLI.services;
 
 import com.FeatureDocClient.FeatureDocCLI.commands.LoginCommand;
 
+import com.FeatureDocClient.FeatureDocCLI.model.model.FeatureResponse;
 import com.FeatureDocClient.FeatureDocCLI.model.model.UserResponse;
 import com.FeatureDocClient.FeatureDocCLI.model.model.UserRoleResponse;
 import org.springframework.stereotype.Service;
@@ -94,24 +95,18 @@ public class UserService {
 
     }
 
-    public Mono<UserRoleResponse> createUserRole(UserRoleResponse userRoleResponse) {
+    public Mono<String> createUserRole(UserRoleResponse.UserRoleId userRolId) {
 
         return webClient.post()
                 .uri("/user-roles") // Endpoint for POST request
                 .header("Authorization", "Bearer " + LoginCommand.getAccessToken())
-                .bodyValue(userRoleResponse) // Include the request body (if needed)
-                .exchangeToMono(clientResponse -> {
-                    System.out.println("Response status: " + clientResponse.statusCode());
-                    if (clientResponse.statusCode().is2xxSuccessful()) {
-                        return clientResponse.bodyToMono(UserRoleResponse.class)
-                                .doOnNext(response -> System.out.println("Response body: " + response));
-                    } else {
-                        return clientResponse.bodyToMono(String.class)
-                                .flatMap(errorBody -> {
-                                    System.out.println("Error body: " + errorBody);
-                                    return Mono.error(new RuntimeException("API error: " + clientResponse.statusCode() + ", " + errorBody));
-                                });
-                    }
+                .bodyValue(userRolId) // Send the request body (description only)
+                .retrieve()
+                .bodyToMono(UserRoleResponse.class)
+                .map(priority -> "User Role created successfully: " + priority.toString())
+                .onErrorResume(e -> {
+                    System.err.println("Error occurred: " + e.getMessage());
+                    return Mono.just("Error creating priority: " + e.getMessage());
                 });
     }
 

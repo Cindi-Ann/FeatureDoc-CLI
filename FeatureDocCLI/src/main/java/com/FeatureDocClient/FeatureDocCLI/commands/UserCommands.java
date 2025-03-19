@@ -48,9 +48,9 @@ public class UserCommands {
     public String createUserRoles(Integer userID, Integer roleID){
         try {
             UserRoleResponse.UserRoleId userRoleId = new UserRoleResponse.UserRoleId(roleID, userID);
-            UserRoleResponse requestPayload = new UserRoleResponse(userRoleId);
-            UserRoleResponse response = userService.createUserRole(requestPayload).block();
-            return "Role successfully assigned: " + response;
+            Mono<String> response = userService.createUserRole(userRoleId);
+
+            return "Role successfully assigned: " + response.block();
         } catch (Exception e) {
             return "Failed to assign role: " + e.getMessage();
         }
