@@ -4,11 +4,26 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 
-@Getter
-@Setter
+
 public class FeatureStatusResponse {
     private Integer featureStatusID;
     private String description;
+
+    public Integer getFeatureStatusID() {
+        return featureStatusID;
+    }
+
+    public void setFeatureStatusID(Integer featureStatusID) {
+        this.featureStatusID = featureStatusID;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
 
     public FeatureStatusResponse(String description) {
         this.description = description;

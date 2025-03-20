@@ -5,8 +5,7 @@ import lombok.Setter;
 import lombok.ToString;
 
 
-@Getter
-@Setter
+
 @ToString
 public class UserRoleResponse {
 
@@ -16,12 +15,35 @@ public class UserRoleResponse {
         this.id = id;
     }
 
+    public UserRoleId getId() {
+        return id;
+    }
+
+    public void setId(UserRoleId id) {
+        this.id = id;
+    }
+
     // Inner class to represent the composite key
-    @Getter
-    @Setter
+
     public static class UserRoleId {
         private Integer roleID;
         private Integer userID;
+
+        public Integer getRoleID() {
+            return roleID;
+        }
+
+        public void setRoleID(Integer roleID) {
+            this.roleID = roleID;
+        }
+
+        public Integer getUserID() {
+            return userID;
+        }
+
+        public void setUserID(Integer userID) {
+            this.userID = userID;
+        }
 
         // No-argument constructor (required for deserialization)
         public UserRoleId() {}

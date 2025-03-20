@@ -27,18 +27,18 @@ public class UserService {
     }
 
     public Mono<String> loginUser(String authCode) {
-        return webClient.get()  // Use GET as the server expects a GET request
+        return webClient.get()
                 .uri(uriBuilder -> uriBuilder.path("/auth/token")  // Define the path
                         .queryParam("code", authCode)  // Add the 'code' as a query parameter
                         .build())
                 .retrieve()
                 .bodyToMono(String.class)  // Retrieve the response body as a string
                 .map(response -> {
-                    // Process the response and extract JWT if necessary
+
                     try {
-                        // Create ObjectMapper instance
+
                         ObjectMapper objectMapper = new ObjectMapper();
-                        // Parse the string to a JsonNode
+
                         JsonNode jsonNode = objectMapper.readTree(response);
                         // Extract te access_token
                         String accessToken = jsonNode.get("access_token").asText();
@@ -98,9 +98,9 @@ public class UserService {
     public Mono<String> createUserRole(UserRoleResponse.UserRoleId userRolId) {
 
         return webClient.post()
-                .uri("/user-roles") // Endpoint for POST request
+                .uri("/user-roles")
                 .header("Authorization", "Bearer " + LoginCommand.getAccessToken())
-                .bodyValue(userRolId) // Send the request body (description only)
+                .bodyValue(userRolId)
                 .retrieve()
                 .bodyToMono(UserRoleResponse.class)
                 .map(priority -> "User Role created successfully: " + priority.toString())
