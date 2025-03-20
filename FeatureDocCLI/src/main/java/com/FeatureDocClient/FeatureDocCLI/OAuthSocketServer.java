@@ -22,7 +22,7 @@ public class OAuthSocketServer {
                     request.append(line).append("\n");
                 }
 
-                // Extract the authorization code from the request
+                // Extract the authorizaextractAuthorizationCodetion code from the request
                 String code = extractAuthorizationCode(request.toString());
                 if (code != null) {
                     System.out.println("Authorization code received: " + code);

@@ -158,3 +158,75 @@
 1742397018252:get-role-by-id --id 12
 1742397429989:test
 1742397438375:test --args a1,a2,a3,a4
+1742455664050:login
+1742456429467:get-all-users
+1742456483577:login
+1742456496910:get-all-users
+1742456563017:login
+1742457210152:get-all-users
+1742457262540:login
+1742457277599:get-all-users
+1742457378486:login
+1742457582588:stacktrace
+1742457727802:login
+1742457819022:get-all-users
+1742457897547:login
+1742458366811:localhost
+1742458368946:login
+1742458605180:get-all-users
+1742458627411:get-roles
+1742459669543:login
+1742459733785:get-all-users
+1742459769545:login
+1742459788421:get-all-users
+1742460338391:login
+1742460352606:get-all-users
+1742460847887:login
+1742461003903:get-all-users
+1742461595448:login
+1742461662646:get-all-users
+1742461785993:login
+1742461796431:get-all-roles
+1742461800050:get-roles
+1742461809390:get-all-users
+1742461973822:login
+1742462038182:get-all-users
+1742462068962:get-feature-history
+1742462085678:get-feature-history --id 2
+1742462109657:get-feature-history --id 10
+1742462123125:stacktrace
+1742462184920:get-priorities
+1742462209875:get-priority-by-id --id 1
+1742462637841:add-feature --createdby 1 --updatedby 3 --featureStatusID 2 --priorityID 3 --assignedTo 101 --name ADD CLI JAR --shortDescription Make the jar file for the cli --URL www.google.com
+1742462800069:add-feature --jsonInput {"createdBy": 1, "updatedBy": 3, "featureStatusID": 2, "priorityID": 3, "assignedTo": 101, "name": "ADD CLI JAR", "shortDescription": "Make the jar file for the cli", "URL": "www.google.com"}
+1742462835865:add-feature --jsonInput "{"createdBy": 1, "updatedBy": 3, "featureStatusID": 2, "priorityID": 3, "assignedTo": 101, "name": "ADD CLI JAR", "shortDescription": "Make the jar file for the cli", "URL": "www.google.com"}"
+1742463052122:add-feature --jsonInput '{"createdBy": 1, "updatedBy": 1, "featureStatusID": 2, "priorityID": 3, "assignedTo": 101, "name": "ADD CLI JAR", "shortDescription": "Make the jar file for the cli", "URL": "www.google.com"}'
+1742463133144:add-feature --jsonInput '{"createdBy": 1, "updatedBy": 3, "featureStatusID": 2, "priorityID": 3, "assignedTo": 101, "name": "ADD CLI JAR", "shortDescription": "Make the jar file for the cli", "url": "www.google.com"}'
+1742464009364:add-feature --jsonInput '{"createdBy": 1, "updatedBy": 3, "featureStatusID": 2, "priorityID": 3, "assignedTo": 101, "name": "ADD CLI feature", "shortDescription": "Create Unit Tests for feature doc", "url": "www.google.com"}'
+1742464014229:login
+1742464041153:add-feature --jsonInput '{"createdBy": 1, "updatedBy": 3, "featureStatusID": 2, "priorityID": 3, "assignedTo": 101, "name": "ADD CLI feature", "shortDescription": "Create Unit Tests for feature doc", "url": "www.google.com"}'
+1742465455408:add-feature --jsonInput '{"createdBy": 1, "updatedBy": 3, "featureStatusID": 2, "priorityID": 3, "assignedTo": 101, "name": "Update Email", "shortDescription": "Include names in emails", "url": "www.google.com"}'
+1742465459475:login
+1742465478615:add-feature --jsonInput '{"createdBy": 1, "updatedBy": 3, "featureStatusID": 2, "priorityID": 3, "assignedTo": 101, "name": "Update Email", "shortDescription": "Include names in emails", "url": "www.google.com"}'
+1742465637888:get-latest-feature-version --Id 2
+1742465652878:get-latest-feature-version --id 2
+1742465687091:get-feature-history --id 2
+1742465701325:get-feature-statuses
+1742465727225:get-feature-status-by-id --
+1742465746913:get-feature-status-by-id --2
+1742465758011:get-feature-status-by-id --id 2
+1742466104421:get-latest-feature-version --id 50
+1742466118459:get-latest-feature-version --id 10
+1742466800598:login
+1742466815546:get-latest-feature-version --id 10
+1742466880540:get-feature-history --id 10
+1742468240448:update-feature add-feature --jsonInput '{"createdBy": 1, "updatedBy": 3, "featureStatusID": 2, "priorityID": 3, "assignedTo": 101, "name": "ADD CLI feature", "shortDescription": "Create Unit Tests for feature doc", "url": "www.google.com"}'
+1742468308800:update-feature add-feature --jsonInput '{"createdBy": 1, "updatedBy": 3, "featureID": 2, "priorityID": 3, "assignedTo": 101, "name": "ADD CLI feature", "shortDescription": "Create Unit Tests for feature doc", "url": "www.google.com"}'
+1742468535860:update-feature  '{"createdBy": 1, "updatedBy": 3, "featureStatusID": 2, "priorityID": 3, "assignedTo": 101, "name": "ADD CLI feature", "shortDescription": "Create Unit Tests for feature doc", "url": "www.google.com"}'
+1742468697459:update-feature  '{ "featureID":10, "featureStatusID": 2, "priorityID": 3, "assignedTo": 101, "name": "ADD CLI feature", "shortDescription": "Create Unit Tests for feature doc", "url": "www.google.com"}'
+1742468701199:login
+1742468719378:update-feature  '{ "featureID":10, "featureStatusID": 2, "priorityID": 3, "assignedTo": 101, "name": "ADD CLI feature", "shortDescription": "Create Unit Tests for feature doc", "url": "www.google.com"}'
+1742468873419:update-feature  '{  "shortDescription": "Create Unit Tests for feature doc renaming"}'
+1742469062647:get-user-roles
+1742469075919:get-user-roles --id 101
+1742469085638:stacktrace

@@ -9,8 +9,7 @@ import org.springframework.web.reactive.function.client.WebClient;
 public class WebClientConfig {
 
     //also provides a default
-    @Value("${api_url:http://localhost:8080}")
-    private String baseUrl;
+    private String baseUrl = "http://ec2-13-244-100-161.af-south-1.compute.amazonaws.com:8080";
 
     @Bean
     public WebClient webClient() {

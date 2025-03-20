@@ -2,7 +2,8 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/.idea/FeatureDocCLI.iml" filepath="$PROJECT_DIR$/.idea/FeatureDocCLI.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/FeatureDoc-CLI.iml" filepath="$PROJECT_DIR$/.idea/FeatureDoc-CLI.iml" />
+      <module fileurl="file://$PROJECT_DIR$/FeatureDocCLI/FeatureDocCLI.iml" filepath="$PROJECT_DIR$/FeatureDocCLI/FeatureDocCLI.iml" />
     </modules>
   </component>
 </project>

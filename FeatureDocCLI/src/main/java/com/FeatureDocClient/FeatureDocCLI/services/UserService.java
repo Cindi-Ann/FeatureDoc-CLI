@@ -5,6 +5,7 @@ import com.FeatureDocClient.FeatureDocCLI.commands.LoginCommand;
 import com.FeatureDocClient.FeatureDocCLI.model.model.FeatureResponse;
 import com.FeatureDocClient.FeatureDocCLI.model.model.UserResponse;
 import com.FeatureDocClient.FeatureDocCLI.model.model.UserRoleResponse;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Flux;
@@ -12,6 +13,7 @@ import reactor.core.publisher.Mono;
 
 
 import java.util.stream.Collectors;
+
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -28,26 +30,29 @@ public class UserService {
 
     public Mono<String> loginUser(String authCode) {
         return webClient.get()
+                // Use GET as the server expects a GET request
                 .uri(uriBuilder -> uriBuilder.path("/auth/token")  // Define the path
                         .queryParam("code", authCode)  // Add the 'code' as a query parameter
                         .build())
                 .retrieve()
                 .bodyToMono(String.class)  // Retrieve the response body as a string
                 .map(response -> {
+                    // Process the response and extract JWT if necessary
 
+                    // Create ObjectMapper instance
+                    ObjectMapper objectMapper = new ObjectMapper();
+                    // Parse the string to a JsonNode
+                    JsonNode jsonNode = null;
                     try {
-
-                        ObjectMapper objectMapper = new ObjectMapper();
-
-                        JsonNode jsonNode = objectMapper.readTree(response);
-                        // Extract te access_token
-                        String accessToken = jsonNode.get("access_token").asText();
-
-                        return accessToken;
-                    } catch (Exception e) {
-                        e.printStackTrace();
+                        jsonNode = objectMapper.readTree(response);
+                    } catch (JsonProcessingException e) {
+                        throw new RuntimeException(e);
                     }
-                    return "No token received";
+                    // Extract te access_token
+                    String accessToken = jsonNode.get("access_token").asText();
+
+                    return accessToken;
+
                 });
     }
 

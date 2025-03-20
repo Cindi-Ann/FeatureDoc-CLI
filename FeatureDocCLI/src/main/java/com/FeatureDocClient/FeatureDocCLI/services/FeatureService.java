@@ -33,6 +33,20 @@ public class FeatureService {
                 });
     }
 
+    public Mono<String> updateFeature(FeatureVersion  request) {
+        return webClient.put()
+                .uri("/feature") // Endpoint to create a new priority
+                .header("Authorization", "Bearer " + LoginCommand.getAccessToken())
+                .bodyValue(request) // Send the request body (description only)
+                .retrieve()
+                .bodyToMono(FeatureVersion.class)
+                .map(priority -> "Feature updated successfully: " + priority.toString())
+                .onErrorResume(e -> {
+                    System.err.println("Error occurred: " + e.getMessage());
+                    return Mono.just("Error creating priority: " + e.getMessage());
+                });
+    }
+
 
     /// ////////////// Feature Version ///////////
     // Get a single feature by their ID

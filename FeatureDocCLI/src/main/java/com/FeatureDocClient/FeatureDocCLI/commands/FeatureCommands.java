@@ -2,6 +2,7 @@ package com.FeatureDocClient.FeatureDocCLI.commands;
 
 import com.FeatureDocClient.FeatureDocCLI.model.model.FeatureCreatedResponse;
 import com.FeatureDocClient.FeatureDocCLI.model.model.FeatureResponse;
+import com.FeatureDocClient.FeatureDocCLI.model.model.FeatureVersion;
 import com.FeatureDocClient.FeatureDocCLI.services.FeatureService;
 import com.FeatureDocClient.FeatureDocCLI.services.FeatureStatusService;
 import com.FeatureDocClient.FeatureDocCLI.services.PriorityService;
@@ -87,6 +88,19 @@ public class FeatureCommands {
             ObjectMapper objectMapper = new ObjectMapper();
             FeatureCreatedResponse featureRequest = objectMapper.readValue(jsonInput, FeatureCreatedResponse.class);
             Mono<String> response = featureService.createFeature(featureRequest);
+            return response.block();
+        } catch (Exception e) {
+            return "Invalid JSON input: " + e.getMessage();
+        }
+    }
+
+
+    @ShellMethod(key= "update-feature", value = "update a feature")
+    public String updateFeature(String jsonInput) {
+        try {
+            ObjectMapper objectMapper = new ObjectMapper();
+            FeatureVersion featureRequest = objectMapper.readValue(jsonInput, FeatureVersion.class);
+            Mono<String> response = featureService.updateFeature(featureRequest);
             return response.block();
         } catch (Exception e) {
             return "Invalid JSON input: " + e.getMessage();

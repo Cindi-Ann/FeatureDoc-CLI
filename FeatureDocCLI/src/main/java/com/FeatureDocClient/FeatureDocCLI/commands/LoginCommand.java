@@ -48,12 +48,9 @@ public class LoginCommand {
             // Start the socket server and wait for the authorization code
             String authorizationCode = OAuthSocketServer.startAndWaitForCode(3000);
             String decodedAuthCode = URLDecoder.decode(authorizationCode, StandardCharsets.UTF_8);
-            // Exchange the auth code for a jwt from the server
-            String requestBody =  decodedAuthCode;
             //JWT = resposne from server
             Mono<String> response = userService.loginUser(decodedAuthCode);
             setAccessToken(response.block());
-            System.out.println(accessToken);
             return response.block();
         } catch (IOException e) {
             System.out.println("Error during login: " + e.getMessage());

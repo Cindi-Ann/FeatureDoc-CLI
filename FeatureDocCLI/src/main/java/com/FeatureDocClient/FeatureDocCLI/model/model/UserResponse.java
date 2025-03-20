@@ -18,7 +18,7 @@ public class UserResponse {
     @Override
     public String toString() {
         // Use String.format for cleaner formatting
-        return String.format("Name: %-20s | Email: %-30s", name, email);
+        return String.format("ID: %-7d Name: %-20s | Email: %-30s",userID, name, email);
     }
 
     public Integer getUserID() {
