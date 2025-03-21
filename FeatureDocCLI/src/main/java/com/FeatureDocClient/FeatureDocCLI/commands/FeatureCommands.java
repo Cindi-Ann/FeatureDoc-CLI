@@ -1,7 +1,7 @@
 package com.FeatureDocClient.FeatureDocCLI.commands;
 
 import com.FeatureDocClient.FeatureDocCLI.model.model.FeatureCreatedResponse;
-import com.FeatureDocClient.FeatureDocCLI.model.model.FeatureResponse;
+import com.FeatureDocClient.FeatureDocCLI.model.model.UpdateFeatureRequest;
 import com.FeatureDocClient.FeatureDocCLI.services.FeatureService;
 import com.FeatureDocClient.FeatureDocCLI.services.FeatureStatusService;
 import com.FeatureDocClient.FeatureDocCLI.services.PriorityService;
@@ -10,8 +10,6 @@ import org.springframework.shell.standard.ShellMethod;
 import org.springframework.shell.standard.ShellOption;
 import reactor.core.publisher.Mono;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 
 @ShellComponent
 public class FeatureCommands {
@@ -100,13 +98,38 @@ public class FeatureCommands {
     }
 
 
+    @ShellMethod(key = "update-feature", value = "Update a feature")
+    public String updateFeature(
+            @ShellOption(help = "Feature ID") Long featureID,
+            @ShellOption(help = "Feature name", defaultValue = ShellOption.NULL) String name,
+            @ShellOption(help = "Short description", defaultValue = ShellOption.NULL) String shortDescription,
+            @ShellOption(help = "Feature status ID", defaultValue = ShellOption.NULL) Integer featureStatusID,
+            @ShellOption(help = "Priority ID", defaultValue = ShellOption.NULL) Integer priorityID,
+            @ShellOption(help = "Assigned to user ID", defaultValue = ShellOption.NULL) Long assignedTo,
+            @ShellOption(help = "Updated by user ID", defaultValue = ShellOption.NULL) Long updatedBy,
+            @ShellOption(help = "Feature URL", defaultValue = ShellOption.NULL) String URL) {
 
+        // Create the UpdateFeatureRequest object
+        UpdateFeatureRequest updateRequest = new UpdateFeatureRequest();
 
+        // Set fields only if they are provided (not null)
+        if (featureID != null) updateRequest.setFeatureID(featureID);
+        if (name != null) updateRequest.setName(name);
+        if (shortDescription != null) updateRequest.setShortDescription(shortDescription);
+        if (featureStatusID != null) updateRequest.setFeatureStatusID(featureStatusID);
+        if (priorityID != null) updateRequest.setPriorityID(priorityID);
+        if (assignedTo != null) updateRequest.setAssignedTo(assignedTo);
+        if (updatedBy != null) updateRequest.setUpdatedBy(updatedBy);
+        if (URL != null) updateRequest.setURL(URL);
 
-//    @ShellMethod(key = "delete-feature-status-by-id", value = "get all features statuses")
-//    public String deleteFeatureStatusesByID(Integer id) {
-//        Mono<String> response = featureStatusService.deleteFeatureStatusById(id);
-//        return response.block(); // Block to get the result (for simplicity in a shell command)
-//    }
+        try {
+
+            Mono<String> response = featureService.updateFeature(updateRequest);
+            return response.block();
+        } catch (Exception e) {
+            return "Invalid Input: " + e.getMessage();
+        }
+    }
+
 
 }
