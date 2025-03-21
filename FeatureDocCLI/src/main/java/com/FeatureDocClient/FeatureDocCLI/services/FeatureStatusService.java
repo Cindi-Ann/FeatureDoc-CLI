@@ -1,5 +1,6 @@
 package com.FeatureDocClient.FeatureDocCLI.services;
 
+import com.FeatureDocClient.FeatureDocCLI.JWTUtils;
 import com.FeatureDocClient.FeatureDocCLI.commands.LoginCommand;
 import com.FeatureDocClient.FeatureDocCLI.model.model.*;
 import org.springframework.stereotype.Service;
@@ -21,7 +22,7 @@ public class FeatureStatusService {
     public Mono<String> getAllFeatureStatuses() {
         return webClient.get()
                 .uri("/feature-statuses")
-                .header("Authorization", "Bearer " + LoginCommand.getAccessToken())
+                .header("Authorization", "Bearer " + JWTUtils.getJwt())
                 .retrieve()
                 .bodyToFlux(FeatureStatusResponse.class)
                 .collectList()
@@ -41,7 +42,7 @@ public class FeatureStatusService {
     public Mono<String> getFeatureStatusById(Integer id) {
         return webClient.get()
                 .uri("/feature-statuses/{id}", id)
-                .header("Authorization", "Bearer " + LoginCommand.getAccessToken())
+                .header("Authorization", "Bearer " + JWTUtils.getJwt())
                 .retrieve()
                 .bodyToMono(FeatureStatusResponse.class)
                 .map(featureStatus -> "Feature-Status:\n" + featureStatus.toString())
@@ -56,7 +57,7 @@ public class FeatureStatusService {
     public Mono<String> deleteFeatureStatusById(Integer id) {
         return webClient.delete()
                 .uri("/feature-statuses/{id}", id)
-                .header("Authorization", "Bearer " + LoginCommand.getAccessToken())
+                .header("Authorization", "Bearer " + JWTUtils.getJwt())
                 .retrieve()
                 .bodyToMono(FeatureResponse.class)
                 .then(Mono.just("Feature status with ID " + id + " deleted successfully."))
@@ -70,7 +71,7 @@ public class FeatureStatusService {
         FeatureStatusResponse request = new FeatureStatusResponse(description);
         return webClient.post()
                 .uri("/feature-statuses") // Endpoint to create a new Feature-Status
-                .header("Authorization", "Bearer " + LoginCommand.getAccessToken())
+                .header("Authorization", "Bearer " + JWTUtils.getJwt())
                 .bodyValue(request) // Send the request body (description only)
                 .retrieve()
                 .bodyToMono(FeatureStatusResponse.class)

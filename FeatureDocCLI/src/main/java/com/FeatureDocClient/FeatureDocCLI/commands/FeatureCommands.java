@@ -26,13 +26,13 @@ public class FeatureCommands {
     }
 
     @ShellMethod(key = "get-feature-history", value = "get a feature's history by id")
-    public String getFeatureHistoryById(Integer id){
+    public String getFeatureHistoryById(Integer id) {
         Mono<String> response = featureService.getFeatureHistoryById(id);
         return response.block(); // Block to get the result (for simplicity in a shell command)
     }
 
     @ShellMethod(key = "get-latest-feature-version", value = "get a feature's latest version by id")
-    public String getLatestFeatureVersionById(Integer id){
+    public String getLatestFeatureVersionById(Integer id) {
         Mono<String> response = featureService.getLatestFeatureVersionById(id);
         return response.block(); // Block to get the result (for simplicity in a shell command)
     }
@@ -73,22 +73,39 @@ public class FeatureCommands {
         return response.block(); // Block to get the result (for simplicity in a shell command)
     }
 
-    @ShellMethod(key= "create-priority", value = "create a priority")
+    @ShellMethod(key = "create-priority", value = "create a priority")
     public String createPriority(String description) {
         Mono<String> response = priorityService.createPriority(description);
         return response.block(); // Block to get the result (for simplicity in a shell command)
     }
 
-    @ShellMethod(key= "add-feature", value = "add a feature")
-    public String addFeature(String jsonInput) {
+    @ShellMethod(key = "add-feature", value = "add a feature")
+    public String addFeature(@ShellOption(help = "Created by user ID", defaultValue = ShellOption.NULL) Integer createdBy,
+                             @ShellOption(help = "Updated by user ID", defaultValue = ShellOption.NULL) Integer updatedBy,
+                             @ShellOption(help = "Feature status by ID", defaultValue = ShellOption.NULL) Integer featureStatusID,
+                             @ShellOption(help = "Priority ID", defaultValue = ShellOption.NULL) Integer priorityID,
+                             @ShellOption(help = "Assigned to user ID", defaultValue = ShellOption.NULL) Integer assignedTo,
+                             @ShellOption(help = "Feature name", defaultValue = ShellOption.NULL) String name,
+                             @ShellOption(help = "Short description", defaultValue = ShellOption.NULL) String shortDescription,
+                             @ShellOption(help = "Feature URL", defaultValue = ShellOption.NULL) String URL) {
+
+        FeatureCreatedResponse createRequest = new FeatureCreatedResponse();
+        if (createdBy != null) createRequest.setCreatedBy(createdBy);
+        if (name != null) createRequest.setName(name);
+        if (shortDescription != null) createRequest.setShortDescription(shortDescription);
+        if (featureStatusID != null) createRequest.setFeatureStatusID(featureStatusID);
+        if (priorityID != null) createRequest.setPriorityID(priorityID);
+        if (assignedTo != null) createRequest.setAssignedTo(assignedTo);
+        if (updatedBy != null) createRequest.setUpdatedBy(updatedBy);
+        if (URL != null) createRequest.setURL(URL);
+
         try {
-            ObjectMapper objectMapper = new ObjectMapper();
-            FeatureCreatedResponse featureRequest = objectMapper.readValue(jsonInput, FeatureCreatedResponse.class);
-            Mono<String> response = featureService.createFeature(featureRequest);
+            Mono<String> response = featureService.createFeature(createRequest);
             return response.block();
         } catch (Exception e) {
-            return "Invalid JSON input: " + e.getMessage();
+            return "Invalid Input: " + e.getMessage();
         }
+
     }
 
     @ShellMethod(key= "delete-priority", value = "delete a priority")

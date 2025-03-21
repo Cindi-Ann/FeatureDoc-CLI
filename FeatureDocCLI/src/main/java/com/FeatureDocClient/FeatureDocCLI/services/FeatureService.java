@@ -1,5 +1,6 @@
 package com.FeatureDocClient.FeatureDocCLI.services;
 
+import com.FeatureDocClient.FeatureDocCLI.JWTUtils;
 import com.FeatureDocClient.FeatureDocCLI.commands.LoginCommand;
 import com.FeatureDocClient.FeatureDocCLI.model.model.*;
 import org.springframework.stereotype.Service;
@@ -22,21 +23,21 @@ public class FeatureService {
     public Mono<String> createFeature(FeatureCreatedResponse request) {
         return webClient.post()
                 .uri("/feature") // Endpoint to create a new priority
-                .header("Authorization", "Bearer " + LoginCommand.getAccessToken())
+                .header("Authorization", "Bearer " + JWTUtils.getJwt())
                 .bodyValue(request) // Send the request body (description only)
                 .retrieve()
                 .bodyToMono(FeatureResponse.class)
                 .map(priority -> "Feature created successfully: " + priority.toString())
                 .onErrorResume(e -> {
                     System.err.println("Error occurred: " + e.getMessage());
-                    return Mono.just("Error creating priority: " + e.getMessage());
+                    return Mono.just("Error creating feature: " + e.getMessage());
                 });
     }
 
     public Mono<String> updateFeature(UpdateFeatureRequest  request) {
         return webClient.put()
                 .uri("/feature") // Endpoint to create a new priority
-                .header("Authorization", "Bearer " + LoginCommand.getAccessToken())
+                .header("Authorization", "Bearer " + JWTUtils.getJwt())
                 .bodyValue(request) // Send the request body (description only)
                 .retrieve()
                 .bodyToMono(UpdateFeatureResponse.class)
@@ -53,7 +54,7 @@ public class FeatureService {
     public Mono<String> getFeatureHistoryById(Integer id) {
         return webClient.get()
                 .uri("/feature-versions/{id}/history", id)
-                .header("Authorization", "Bearer " + LoginCommand.getAccessToken())
+                .header("Authorization", "Bearer " + JWTUtils.getJwt())
                 .retrieve()
                 .bodyToFlux(FeatureResponse.class)
                 .collectList()
@@ -71,7 +72,7 @@ public class FeatureService {
     public Mono<String> getLatestFeatureVersionById(Integer id) {
         return webClient.get()
                 .uri("/feature-versions/{id}", id)
-                .header("Authorization", "Bearer " + LoginCommand.getAccessToken())
+                .header("Authorization", "Bearer " + JWTUtils.getJwt())
                 .retrieve()
                 .bodyToMono(FeatureResponse.class)
                 .map(user -> "Feature Version:\n" + user.toString())

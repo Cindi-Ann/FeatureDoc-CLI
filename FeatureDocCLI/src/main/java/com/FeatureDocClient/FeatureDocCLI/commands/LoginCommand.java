@@ -1,7 +1,9 @@
 package com.FeatureDocClient.FeatureDocCLI.commands;
 
 import com.FeatureDocClient.FeatureDocCLI.GoogleOAuth2Config;
+import com.FeatureDocClient.FeatureDocCLI.JWTUtils;
 import com.FeatureDocClient.FeatureDocCLI.OAuthSocketServer;
+import com.FeatureDocClient.FeatureDocCLI.model.model.AccessTokenResponse;
 import com.FeatureDocClient.FeatureDocCLI.services.RoleService;
 import com.FeatureDocClient.FeatureDocCLI.services.UserService;
 import org.springframework.http.HttpHeaders;
@@ -22,15 +24,11 @@ import java.util.Map;
 @ShellComponent
 public class LoginCommand {
 
-    private final WebClient webClient = WebClient.builder().defaultHeader("Accept", "application/x-www-form-urlencoded")
-            .build();
-    private UserService userService;
+    private final UserService userService;
 
     public LoginCommand(UserService userService) {
         this.userService = userService;
     }
-
-    private static String accessToken;
 
     @ShellMethod(key = "login", value = "Perform login and open the browser for authentication")
     public String login() {
@@ -48,18 +46,22 @@ public class LoginCommand {
             // Start the socket server and wait for the authorization code
             String authorizationCode = OAuthSocketServer.startAndWaitForCode(3000);
             String decodedAuthCode = URLDecoder.decode(authorizationCode, StandardCharsets.UTF_8);
-            // Exchange the auth code for a jwt from the server
-            String requestBody =  decodedAuthCode;
-            //JWT = resposne from server
-            Mono<String> response = userService.loginUser(decodedAuthCode);
-            setAccessToken(response.block());
-            System.out.println(accessToken);
-            return response.block();
+            //JWT = response from server
+            String response = userService.loginUser(decodedAuthCode).getAccessToken();
+
+            System.out.println("Welcome User! :)");
+            JWTUtils.setJwt(response);
+
+            return response;
         } catch (IOException e) {
             System.out.println("Error during login: " + e.getMessage());
         }
 
         return "Login Unsuccessful";
+    }
+
+    public static String getAccessToken(){
+        return "";
     }
 
     public void openBrowser(String url) {
@@ -84,11 +86,4 @@ public class LoginCommand {
         }
     }
 
-    public static void setAccessToken(String newValue) {
-        accessToken = newValue;
-    }
-
-    public static String getAccessToken() {
-        return accessToken;
-    }
 }

@@ -1,5 +1,6 @@
 package com.FeatureDocClient.FeatureDocCLI.services;
 
+import com.FeatureDocClient.FeatureDocCLI.JWTUtils;
 import com.FeatureDocClient.FeatureDocCLI.commands.LoginCommand;
 import com.FeatureDocClient.FeatureDocCLI.model.model.RoleResponse;
 import org.springframework.stereotype.Service;
@@ -22,7 +23,7 @@ public class RoleService {
     public Mono<String> getAllRoles() {
         return webClient.get()
                 .uri("/roles")
-                .header("Authorization", "Bearer " + LoginCommand.getAccessToken())
+                .header("Authorization", "Bearer " + JWTUtils.getJwt())
                 .retrieve()
                 .bodyToFlux(RoleResponse.class)
                 .collectList()
@@ -42,7 +43,7 @@ public class RoleService {
         RoleResponse request = new RoleResponse(roleName);
         return webClient.post()
                 .uri("/roles") // Endpoint to create a new Role
-                .header("Authorization", "Bearer " + LoginCommand.getAccessToken())
+                .header("Authorization", "Bearer " + JWTUtils.getJwt())
                 .bodyValue(request) // Send the request body (description only)
                 .retrieve()
                 .bodyToMono(RoleResponse.class) // Expect a single RoleResponse in the response
@@ -56,7 +57,7 @@ public class RoleService {
     public Mono<String> deleteRole(Integer RoleID) {
         return webClient.delete()
                 .uri("/roles/{id}", RoleID) // Use path variable for RoleID
-                .header("Authorization", "Bearer " + LoginCommand.getAccessToken())
+                .header("Authorization", "Bearer " + JWTUtils.getJwt())
                 .retrieve()
                 .bodyToMono(Void.class)
                 .thenReturn("Role deleted successfully: " + RoleID)
@@ -69,7 +70,7 @@ public class RoleService {
     public Mono<String> getRoleById(Integer id) {
         return webClient.get()
                 .uri("/roles/{id}", id)
-                .header("Authorization", "Bearer " + LoginCommand.getAccessToken())
+                .header("Authorization", "Bearer " + JWTUtils.getJwt())
                 .retrieve()
                 .bodyToMono(RoleResponse.class)
                 .map(user -> "Role:\n" + user.toString())
