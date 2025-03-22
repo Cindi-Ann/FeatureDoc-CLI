@@ -30,6 +30,7 @@ public class UserService {
         return webClient.get()
                 .uri(uriBuilder -> uriBuilder.path("/auth/token")
                         .queryParam("code", authCode)
+                        .queryParam("channel", "CLI")
                         .build())
                 .retrieve()
                 .bodyToMono(AccessTokenResponse.class)  // Directly parse to AccessTokenResponse
