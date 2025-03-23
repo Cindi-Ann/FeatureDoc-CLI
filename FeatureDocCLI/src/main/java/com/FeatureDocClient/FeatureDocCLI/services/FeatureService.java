@@ -81,4 +81,23 @@ public class FeatureService {
                 );
     }
 
+    public Mono<String> getAllLatestFeatureVersions() {
+        return webClient.get()
+                .uri("/feature-versions")
+                .header("Authorization", "Bearer " + JWTUtils.getJwt())
+                .retrieve()
+                .bodyToFlux(FeatureResponse.class)
+                .collectList()
+                .map(users -> users.isEmpty()
+                        ? "No feature versions found"
+                        : "Features:\n" + users.stream()
+                        .map(FeatureResponse::toString)
+                        .collect(Collectors.joining("\n"))
+                )
+                .onErrorResume(e -> {
+                    System.err.println("Error occurred: " + e.getMessage());
+                    return Mono.just("Error retrieving latest features: " + e.getMessage());
+                });
+    }
+
 }
