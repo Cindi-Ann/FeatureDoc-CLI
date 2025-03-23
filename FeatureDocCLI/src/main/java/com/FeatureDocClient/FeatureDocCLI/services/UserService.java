@@ -54,33 +54,31 @@ public class UserService {
                         .map(UserResponse::toString)
                         .collect(Collectors.joining("\n"))
                 );
-//                .onErrorResume(e -> {
-//                    System.err.println("Error occurred: " + e.getMessage());
-//                    return Mono.just("Error retrieving users: " + e.getMessage());
-//                });
     }
 
     // Get a single user by their ID
     public Mono<String> getUserById(Integer id) {
         return webClient.get()
-                .uri("/users/{id}", id)
+                .uri("/users/{userID}", id)
                 .header("Authorization", "Bearer " + JWTUtils.getJwt())
                 .retrieve()
                 .bodyToMono(UserResponse.class)
-                .map(user -> "User:\n" + user.toString())
-                .defaultIfEmpty("User not found.")
-                .onErrorResume(e -> {
-                    System.err.println("Error occurred: " + e.getMessage());
-                    return Mono.just("Error retrieving user: " + e.getMessage());
-                });
+                .flatMap(user -> user.getUserID() != null
+                        ? Mono.just("User:\n" + user.toString())
+                        : Mono.just("User not found.")
+                );
     }
 
-    public Flux<UserRoleResponse> getRolesByUserId(Integer id) {
+    public Flux<String> getRolesByUserId(Integer id) {
         return webClient.get()
                 .uri("/user-roles/user/{id}", id)
                 .header("Authorization", "Bearer " + JWTUtils.getJwt())
                 .retrieve()
-                .bodyToFlux(UserRoleResponse.class);
+                .bodyToFlux(UserRoleResponse.class)
+                .flatMap(user -> user.getId() != null
+                ? Mono.just(user.toString())
+                : Mono.just("User ID not found.")
+        );
 
     }
 

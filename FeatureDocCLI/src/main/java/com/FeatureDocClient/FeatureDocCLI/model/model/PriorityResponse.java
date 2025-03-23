@@ -31,6 +31,6 @@ public class PriorityResponse {
 
     @Override
     public String toString() {
-        return String.format("Priority ID: %-10s | Description: %-10s", priorityID, description);
+        return String.format("Priority ID: %-1s | Description: %-1s", priorityID, description);
     }
 }

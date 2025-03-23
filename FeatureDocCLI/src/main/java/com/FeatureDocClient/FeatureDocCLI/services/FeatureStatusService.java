@@ -3,6 +3,7 @@ package com.FeatureDocClient.FeatureDocCLI.services;
 import com.FeatureDocClient.FeatureDocCLI.JWTUtils;
 import com.FeatureDocClient.FeatureDocCLI.commands.LoginCommand;
 import com.FeatureDocClient.FeatureDocCLI.model.model.*;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
@@ -45,12 +46,10 @@ public class FeatureStatusService {
                 .header("Authorization", "Bearer " + JWTUtils.getJwt())
                 .retrieve()
                 .bodyToMono(FeatureStatusResponse.class)
-                .map(featureStatus -> "Feature-Status:\n" + featureStatus.toString())
-                .defaultIfEmpty("featureStatus not found.")
-                .onErrorResume(e -> {
-                    System.err.println("Error occurred: " + e.getMessage());
-                    return Mono.just("Error retrieving featureStatus: " + e.getMessage());
-                });
+                .flatMap(status -> status.getFeatureStatusID() != null
+                        ? Mono.just("Feature Status:\n" + status.toString())
+                        : Mono.just("Status not found.")
+                );
     }
 
     // Delete feature status by id
@@ -58,13 +57,17 @@ public class FeatureStatusService {
         return webClient.delete()
                 .uri("/feature-statuses/{id}", id)
                 .header("Authorization", "Bearer " + JWTUtils.getJwt())
-                .retrieve()
-                .bodyToMono(FeatureResponse.class)
-                .then(Mono.just("Feature status with ID " + id + " deleted successfully."))
-                .onErrorResume(e -> {
-                    System.err.println("Error occurred: " + e.getMessage());
-                    return Mono.just("Error deleting feature status: " + e.getMessage());
-                });
+                .exchangeToMono(response -> {
+                    HttpStatus status = (HttpStatus) response.statusCode();
+                    if (status.is2xxSuccessful()) {
+                        return Mono.just("Feature Status deleted successfully: " + id);
+                    } else {
+                        return response.bodyToMono(String.class)
+                                .defaultIfEmpty("Unknown error") // Handle empty error body
+                                .flatMap(errorBody -> Mono.error(new RuntimeException("Error deleting role: " + errorBody)));
+                    }
+                })
+                .onErrorResume(e -> Mono.just(e.getMessage()));
     }
 
     public Mono<String> createFeatureStatus(String description) {

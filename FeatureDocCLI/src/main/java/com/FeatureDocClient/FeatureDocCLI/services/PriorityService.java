@@ -3,6 +3,7 @@ package com.FeatureDocClient.FeatureDocCLI.services;
 import com.FeatureDocClient.FeatureDocCLI.JWTUtils;
 import com.FeatureDocClient.FeatureDocCLI.commands.LoginCommand;
 import com.FeatureDocClient.FeatureDocCLI.model.model.PriorityResponse;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
@@ -56,15 +57,19 @@ public class PriorityService {
 
     public Mono<String> deletePriority(Integer priorityID) {
         return webClient.delete()
-                .uri("/priorities/{id}", priorityID) // Use path variable for priorityID
+                .uri("/priorities/{id}", priorityID)
                 .header("Authorization", "Bearer " + JWTUtils.getJwt())
-                .retrieve()
-                .bodyToMono(Void.class)
-                .thenReturn("Priority deleted successfully: " + priorityID)
-                .onErrorResume(e -> {
-                    System.err.println("Error occurred: " + e.getMessage());
-                    return Mono.just("Error deleting priority: " + e.getMessage());
-                });
+                .exchangeToMono(response -> {
+                    HttpStatus status = (HttpStatus) response.statusCode();
+                    if (status.is2xxSuccessful()) {
+                        return Mono.just("Priority deleted successfully: " + priorityID);
+                    } else {
+                        return response.bodyToMono(String.class)
+                                .defaultIfEmpty("Unknown error") // Handle empty error body
+                                .flatMap(errorBody -> Mono.error(new RuntimeException("Error deleting priority: " + errorBody)));
+                    }
+                })
+                .onErrorResume(e -> Mono.just(e.getMessage()));
     }
 
     public Mono<String> getPriorityById(Integer id) {
@@ -73,12 +78,10 @@ public class PriorityService {
                 .header("Authorization", "Bearer " + JWTUtils.getJwt())
                 .retrieve()
                 .bodyToMono(PriorityResponse.class)
-                .map(user -> "Priority:\n" + user.toString())
-                .defaultIfEmpty("Priority not found.")
-                .onErrorResume(e -> {
-                    System.err.println("Error occurred: " + e.getMessage());
-                    return Mono.just("Error retrieving priority: " + e.getMessage());
-                });
+                .flatMap(user -> user.getPriorityID() != null
+                        ? Mono.just("Priority:\n" + user.toString())
+                        : Mono.just("Priority not found.")
+                );
     }
 
 }

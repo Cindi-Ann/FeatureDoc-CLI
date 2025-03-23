@@ -32,13 +32,13 @@ public class UserCommands {
 
     @ShellMethod(key = "get-user-roles", value = "Get all roles for a user")
     public String getUserRolesById(Integer id) {
-        Flux<UserRoleResponse> response = userService.getRolesByUserId(id);
+        Flux<String> response = userService.getRolesByUserId(id);
         // Blocking call for simplicity (not recommended for production)
-        Iterable<UserRoleResponse> userRoles = response.toIterable();
+        Iterable<String> userRoles = response.toIterable();
 
         StringBuilder result = new StringBuilder("User Roles:\n");
-        for (UserRoleResponse userRole : userRoles) {
-            result.append(userRole.toString()).append("\n");
+        for (String userRole : userRoles) {
+            result.append(userRole).append("\n");
         }
 
         return result.toString();

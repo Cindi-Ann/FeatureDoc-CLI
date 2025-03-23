@@ -59,4 +59,10 @@ public class UserRoleResponse {
             return String.format("User ID: %-5s | Role ID: %-5s", userID, roleID);
         }
     }
+
+    @Override
+    public String toString() {
+        return String.format("User ID: %-5s | Role ID: %-5s", this.getId().getUserID(), this.getId().getRoleID());
+    }
+
 }

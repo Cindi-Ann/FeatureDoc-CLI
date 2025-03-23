@@ -41,7 +41,7 @@ public class FeatureService {
                 .bodyValue(request) // Send the request body (description only)
                 .retrieve()
                 .bodyToMono(UpdateFeatureResponse.class)
-                .map(priority -> "Feature updated successfully: " + priority.toString())
+                .map(priority -> "Feature updated successfully:\n" + priority.toString())
                 .onErrorResume(e -> {
                     System.err.println("Error occurred: " + e.getMessage());
                     return Mono.just("Error updating feature: " + e.getMessage());
@@ -75,12 +75,10 @@ public class FeatureService {
                 .header("Authorization", "Bearer " + JWTUtils.getJwt())
                 .retrieve()
                 .bodyToMono(FeatureResponse.class)
-                .map(user -> "Feature Version:\n" + user.toString())
-                .defaultIfEmpty("Feature Version not found.")
-                .onErrorResume(e -> {
-                    System.err.println("Error occurred: " + e.getMessage());
-                    return Mono.just("Error retrieving Feature Version: " + e.getMessage());
-                });
+                .flatMap(feat -> feat.getFeatureID() != null
+                        ? Mono.just("Feature Version:\n" + feat.toString())
+                        : Mono.just("Feature Version not found.")
+                );
     }
 
 }

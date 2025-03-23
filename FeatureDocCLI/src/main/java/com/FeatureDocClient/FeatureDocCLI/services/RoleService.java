@@ -3,6 +3,7 @@ package com.FeatureDocClient.FeatureDocCLI.services;
 import com.FeatureDocClient.FeatureDocCLI.JWTUtils;
 import com.FeatureDocClient.FeatureDocCLI.commands.LoginCommand;
 import com.FeatureDocClient.FeatureDocCLI.model.model.RoleResponse;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
@@ -58,13 +59,17 @@ public class RoleService {
         return webClient.delete()
                 .uri("/roles/{id}", RoleID) // Use path variable for RoleID
                 .header("Authorization", "Bearer " + JWTUtils.getJwt())
-                .retrieve()
-                .bodyToMono(Void.class)
-                .thenReturn("Role deleted successfully: " + RoleID)
-                .onErrorResume(e -> {
-                    System.err.println("Error occurred: " + e.getMessage());
-                    return Mono.just("Error deleting Role: " + e.getMessage());
-                });
+                .exchangeToMono(response -> {
+                    HttpStatus status = (HttpStatus) response.statusCode();
+                    if (status.is2xxSuccessful()) {
+                        return Mono.just("Role deleted successfully: " + RoleID);
+                    } else {
+                        return response.bodyToMono(String.class)
+                                .defaultIfEmpty("Unknown error") // Handle empty error body
+                                .flatMap(errorBody -> Mono.error(new RuntimeException("Error deleting role: " + errorBody)));
+                    }
+                })
+                .onErrorResume(e -> Mono.just(e.getMessage()));
     }
 
     public Mono<String> getRoleById(Integer id) {
@@ -73,12 +78,10 @@ public class RoleService {
                 .header("Authorization", "Bearer " + JWTUtils.getJwt())
                 .retrieve()
                 .bodyToMono(RoleResponse.class)
-                .map(user -> "Role:\n" + user.toString())
-                .defaultIfEmpty("Role not found.")
-                .onErrorResume(e -> {
-                    System.err.println("Error occurred: " + e.getMessage());
-                    return Mono.just("Error retrieving Role: " + e.getMessage());
-                });
+                .flatMap(role -> role.getRoleID() != null
+                        ? Mono.just("Role:\n" + role.toString())
+                        : Mono.just("Role not found.")
+                );
     }
 
 }

@@ -80,14 +80,15 @@ public class FeatureCommands {
     }
 
     @ShellMethod(key = "add-feature", value = "add a feature")
-    public String addFeature(@ShellOption(help = "Created by user ID", defaultValue = ShellOption.NULL) Integer createdBy,
-                             @ShellOption(help = "Updated by user ID", defaultValue = ShellOption.NULL) Integer updatedBy,
-                             @ShellOption(help = "Feature status by ID", defaultValue = ShellOption.NULL) Integer featureStatusID,
-                             @ShellOption(help = "Priority ID", defaultValue = ShellOption.NULL) Integer priorityID,
-                             @ShellOption(help = "Assigned to user ID", defaultValue = ShellOption.NULL) Integer assignedTo,
-                             @ShellOption(help = "Feature name", defaultValue = ShellOption.NULL) String name,
-                             @ShellOption(help = "Short description", defaultValue = ShellOption.NULL) String shortDescription,
-                             @ShellOption(help = "Feature URL", defaultValue = ShellOption.NULL) String URL) {
+    public String addFeature(
+            @ShellOption(help = "Created by user ID") Integer createdBy,
+            @ShellOption(help = "Updated by user ID", defaultValue = ShellOption.NULL) Integer updatedBy,
+            @ShellOption(help = "Feature status by ID", defaultValue = ShellOption.NULL) Integer featureStatusID,
+            @ShellOption(help = "Priority ID", defaultValue = ShellOption.NULL) Integer priorityID,
+            @ShellOption(help = "Assigned to user ID", defaultValue = ShellOption.NULL) Integer assignedTo,
+            @ShellOption(help = "Feature name", defaultValue = ShellOption.NULL) String name,
+            @ShellOption(help = "Short description", defaultValue = ShellOption.NULL) String shortDescription,
+            @ShellOption(help = "Feature URL", defaultValue = ShellOption.NULL) String URL) {
 
         FeatureCreatedResponse createRequest = new FeatureCreatedResponse();
         if (createdBy != null) createRequest.setCreatedBy(createdBy);

@@ -48,11 +48,8 @@ public class LoginCommand {
             String decodedAuthCode = URLDecoder.decode(authorizationCode, StandardCharsets.UTF_8);
             //JWT = response from server
             String response = userService.loginUser(decodedAuthCode).getAccessToken();
-
-            System.out.println("Welcome User! :)");
             JWTUtils.setJwt(response);
-
-            return response;
+            return "Welcome User! :)";
         } catch (IOException e) {
             System.out.println("Error during login: " + e.getMessage());
         }
