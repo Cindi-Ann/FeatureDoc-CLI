@@ -30,30 +30,5 @@ public class UserCommands {
         return response.block();
     }
 
-    @ShellMethod(key = "get-user-roles", value = "Get all roles for a user")
-    public String getUserRolesById(Integer id) {
-        Flux<String> response = userService.getRolesByUserId(id);
-        // Blocking call for simplicity (not recommended for production)
-        Iterable<String> userRoles = response.toIterable();
-
-        StringBuilder result = new StringBuilder("User Roles:\n");
-        for (String userRole : userRoles) {
-            result.append(userRole).append("\n");
-        }
-
-        return result.toString();
-    }
-
-    @ShellMethod(key = "create-user-role", value = "Create user role")
-    public String createUserRoles(Integer userID, Integer roleID){
-        try {
-            UserRoleResponse.UserRoleId userRoleId = new UserRoleResponse.UserRoleId(roleID, userID);
-            Mono<String> response = userService.createUserRole(userRoleId);
-
-            return "Role successfully assigned: " + response.block();
-        } catch (Exception e) {
-            return "Failed to assign role: " + e.getMessage();
-        }
-    }
 }
 
