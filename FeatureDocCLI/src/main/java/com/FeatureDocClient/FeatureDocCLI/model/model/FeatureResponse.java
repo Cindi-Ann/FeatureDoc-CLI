@@ -137,34 +137,31 @@ public class FeatureResponse {
 
     @Override
     public String toString() {
-        return String.format("+-----------------------+---------------------------------------+\n" +
-                        "| %-21s | %-37s |\n" +
-                        "| %-21s | %-37s |\n" +
-                        "| %-21s | %-37s |\n" +
-                        "| %-21s | %-37s |\n" +
-                        "| %-21s | %-37s |\n" +
-                        "| %-21s | %-37s |\n" +
-                        "| %-21s | %-37s |\n" +
-                        "| %-21s | %-37s |\n" +
-                        "| %-21s | %-37s |\n" +
-                        "| %-21s | %-37s |\n" +
-                        "| %-21s | %-37s |\n" +
-                        "| %-21s | %-37s |\n" +
-                        "+-----------------------+---------------------------------------+",
-                "featureVersionID", featureVersionID,
-                "featureName", featureName,
-                "createdBy", createdBy,
-                "createdAt", createdAt,
-                "featureID", featureID,
-                "updateBy", updateBy,
-                "featureStatus", featureStatus,
-                "priority", priority,
-                "assignedTo", assignedTo,
-                "name", name,
-                "shortDescription", shortDescription,
-                "URL", URL,
-                "updatedDate", updatedDate,
-                "deletedDate", deletedDate);
+        StringBuilder sb = new StringBuilder();
+        sb.append("\n+-----------------------+---------------------------------------+\n");
+
+        appendIfNotNull(sb, "featureVersionID", featureVersionID);
+        appendIfNotNull(sb, "featureID", featureID);
+        appendIfNotNull(sb, "createdBy", createdBy);
+        appendIfNotNull(sb, "updatedBy", updateBy);
+        appendIfNotNull(sb, "featureStatusID", featureStatus);
+        appendIfNotNull(sb, "priorityID", priority);
+        appendIfNotNull(sb, "assignedTo", assignedTo);
+        appendIfNotNull(sb, "name", name);
+        appendIfNotNull(sb, "shortDescription", shortDescription);
+        appendIfNotNull(sb, "URL", URL);
+        appendIfNotNull(sb, "updatedDate", updatedDate);
+        appendIfNotNull(sb, "deletedDate", deletedDate);
+
+        sb.append("+-----------------------+---------------------------------------+");
+
+        return sb.toString();
+    }
+
+    private void appendIfNotNull(StringBuilder sb, String label, Object value) {
+        if (value != null) {
+            sb.append(String.format("| %-21s | %-37s |\n", label, value));
+        }
     }
 
 }
