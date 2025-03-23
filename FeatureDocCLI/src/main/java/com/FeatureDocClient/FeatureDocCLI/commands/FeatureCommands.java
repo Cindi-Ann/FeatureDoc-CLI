@@ -31,6 +31,12 @@ public class FeatureCommands {
         return response.block(); // Block to get the result (for simplicity in a shell command)
     }
 
+    @ShellMethod(key = "get-all-features", value = "get all the latest features")
+    public String getAllFeatures() {
+        Mono<String> response = featureService.getAllLatestFeatureVersions();
+        return response.block(); // Block to get the result (for simplicity in a shell command)
+    }
+
     @ShellMethod(key = "get-latest-feature-version", value = "get a feature's latest version by id")
     public String getLatestFeatureVersionById(Integer id) {
         Mono<String> response = featureService.getLatestFeatureVersionById(id);
